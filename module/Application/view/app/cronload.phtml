@@ -1,0 +1,26 @@
+<div class="row">
+    <div class="span12">
+    	<p>"Cron" module is not accessible with http access, only with CLI.</p>
+    	<h2>Loaded modules :</h2>
+    	<ul>
+    		<li>Application</li>
+    		<li>Cron</li>
+    	</ul>
+    	<p>Here how to run cron with application url :</p>
+    	<?php
+    		$contents = '';
+    		$contents = 'php /path/to/app/index.php --cron="/my/app/url"';
+    		$contents = htmlentities($contents);
+			$contents = preg_replace("#\\n#", "</li><li>", $contents);
+    	?>
+    	<pre style="margin-bottom: 18px;" class="prettyprint linenums"><ol class="linenums"><li><?php echo $contents; ?></li></ol></pre>
+		<p>Or with app url default with controller/action :</p>
+		<?php
+    		$contents = '';
+    		$contents = 'php /path/to/app/index.php --cron="controller/action"';
+    		$contents = htmlentities($contents);
+			$contents = preg_replace("#\\n#", "</li><li>", $contents);
+    	?>
+		<pre style="margin-bottom: 18px;" class="prettyprint linenums"><ol class="linenums"><li><?php echo $contents; ?></li></ol></pre>
+	</div> 
+</div>

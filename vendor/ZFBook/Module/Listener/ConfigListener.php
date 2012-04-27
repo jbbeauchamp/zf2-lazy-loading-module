@@ -1,0 +1,42 @@
+<?php
+
+namespace ZFBook\Module\Listener;
+
+use Zend\Module\Listener\ConfigListener as BaseConfigListener,
+	Zend\Module\ModuleEvent;
+
+class ConfigListener extends BaseConfigListener
+{
+    /**
+     * __construct
+     *
+     * @param ListenerOptions $options
+     * @return void
+     */
+    public function __construct(ListenerOptions $options = null)
+    {
+        parent::__construct($options);
+        if ($this->hasCachedConfig()) {
+            $this->skipConfig = true;
+            $this->setMergedConfig($this->getCachedConfig());
+        }
+    }
+    
+    /**
+     * Pass self to the ModuleEvent object early so everyone has access. 
+     * 
+     * @param ModuleEvent $e 
+     * @return ConfigListener
+     */
+    public function loadModulesPre(ModuleEvent $e)
+    {
+    	if($this->getOptions()->getConfigCacheEnabled()) {
+    		$this->getOptions()->setConfigCacheKey(implode('.',$e->getTarget()->getModules()).'.'.$this->getOptions()->getConfigCacheKey());
+    		if ($this->hasCachedConfig()) {
+    			$this->skipConfig = true;
+    			$this->setMergedConfig($this->getCachedConfig());
+    		}
+    	}
+        return parent::loadModulesPre($e);
+    }
+}
