@@ -10,7 +10,6 @@ $appConfig = include 'config/application.config.php';
 
 $listenerOptions  = new ZFBook\Module\Listener\ListenerOptions($appConfig['module_listener_options']);
 $defaultListeners = new ZFBook\Module\Listener\EnvironmentListenerAggregate($listenerOptions);
-$defaultListeners->getConfigListener()->addConfigStaticPath("config/autoload/global.config.php");
 
 $moduleManager = new ZFBook\Module\Manager($appConfig['modules']);
 $moduleManager->events()->attachAggregate($defaultListeners);
