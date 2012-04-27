@@ -1,6 +1,6 @@
 <?php
 
-namespace ZFBook\Module;
+namespace ZFMLL\Module;
 
 use Zend\Module\Manager as BaseManager;
 

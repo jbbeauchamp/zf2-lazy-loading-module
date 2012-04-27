@@ -1,10 +1,10 @@
 <?php
 
-namespace ZFBook\Module\Listener\Server;
+namespace ZFMLL\Module\Listener\Server;
 
-use ZFBook\Module\Listener\AbstractListener as BaseListener,
+use ZFMLL\Module\Listener\AbstractListener as BaseListener,
     Zend\Http\PhpEnvironment\Request,
-    ZFBook\Module\ModuleEvent;
+    ZFMLL\Module\ModuleEvent;
 
 class AbstractListener extends BaseListener
 {

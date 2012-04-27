@@ -1,6 +1,6 @@
 <?php
 
-namespace ZFBook\Module\Listener\Config;
+namespace ZFMLL\Module\Listener\Config;
 
 class LazyLoading
 {

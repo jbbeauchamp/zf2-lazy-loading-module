@@ -1,6 +1,6 @@
 <?php
 
-namespace ZFBook\Module\Listener\Exception;
+namespace ZFMLL\Module\Listener\Exception;
 
 class InvalidArgumentException
     extends \InvalidArgumentException

@@ -1,6 +1,6 @@
 <?php
 
-namespace ZFBook\Module\Listener;
+namespace ZFMLL\Module\Listener;
 
 use Zend\Module\Listener\ConfigListener as BaseConfigListener,
 	Zend\Module\ModuleEvent;

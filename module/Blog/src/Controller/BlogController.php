@@ -10,7 +10,7 @@ class BlogController extends ActionController
     public function blogAction()
     {
         return array(
-            'modules' => $this->getLocator()->get('ZFBook\Module\Manager')->getModules()
+            'modules' => $this->getLocator()->get('ZFMLL\Module\Manager')->getModules()
         );
     }
 }

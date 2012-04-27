@@ -1,8 +1,8 @@
 <?php
 
-namespace ZFBook\Module\Listener\Server;
+namespace ZFMLL\Module\Listener\Server;
 
-use ZFBook\Module\ModuleEvent;
+use ZFMLL\Module\ModuleEvent;
 
 class DomainListener extends AbstractListener
 {

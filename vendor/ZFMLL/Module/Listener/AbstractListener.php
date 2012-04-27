@@ -1,8 +1,8 @@
 <?php
 
-namespace ZFBook\Module\Listener;
+namespace ZFMLL\Module\Listener;
 
-use ZFBook\Module\ModuleEvent;
+use ZFMLL\Module\ModuleEvent;
 
 class AbstractListener implements AuthorizeHandler, EnvironmentHandler
 {

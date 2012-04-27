@@ -1,14 +1,14 @@
 <?php
 
-namespace ZFBook\Module\Listener\Server;
+namespace ZFMLL\Module\Listener\Server;
 
-class HttpsListener extends AbstractListener
+class PortListener extends AbstractListener
 {
 	/**
      * Lister name
      * @var string
      */
-    protected $name = 'https';
+    protected $name = 'port';
 	
     /**
      * 
@@ -17,6 +17,6 @@ class HttpsListener extends AbstractListener
      */
     public function authorizeModule($moduleName)
     {
-        return $this->getRequest()->server()->get('HTTPS') != $this->config;
+        return $this->getRequest()->server()->get('SERVER_PORT') == $this->config;
     }
 }

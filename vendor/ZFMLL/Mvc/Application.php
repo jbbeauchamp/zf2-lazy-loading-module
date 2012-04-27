@@ -1,6 +1,6 @@
 <?php
 
-namespace ZFBook\Mvc;
+namespace ZFMLL\Mvc;
 
 use Zend\Mvc\Application as ZFApplication,
     Zend\Mvc\MvcEvent,
@@ -16,7 +16,7 @@ class Application extends ZFApplication
      */
     public function route(MvcEvent $e)
     {
-        $manager = $this->getLocator()->get('ZFBook\Module\Manager');
+        $manager = $this->getLocator()->get('ZFMLL\Module\Manager');
         $event = $manager->getEvent();
         $event->setParameterEnvironnement('cron');
         $result = $manager->events()->trigger('routeModule.environment', $this, $event, function($r) {

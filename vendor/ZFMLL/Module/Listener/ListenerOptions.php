@@ -1,6 +1,6 @@
 <?php
 
-namespace ZFBook\Module\Listener;
+namespace ZFMLL\Module\Listener;
 
 use Zend\Module\Listener\ListenerOptions as BaseListener;
 

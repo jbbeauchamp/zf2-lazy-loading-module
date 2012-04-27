@@ -8,14 +8,14 @@ Zend\Loader\AutoloaderFactory::factory(array('Zend\Loader\ClassMapAutoloader'=>a
 
 $appConfig = include 'config/application.config.php';
 
-$listenerOptions  = new ZFBook\Module\Listener\ListenerOptions($appConfig['module_listener_options']);
-$defaultListeners = new ZFBook\Module\Listener\EnvironmentListenerAggregate($listenerOptions);
+$listenerOptions  = new ZFMLL\Module\Listener\ListenerOptions($appConfig['module_listener_options']);
+$defaultListeners = new ZFMLL\Module\Listener\EnvironmentListenerAggregate($listenerOptions);
 
-$moduleManager = new ZFBook\Module\Manager($appConfig['modules']);
+$moduleManager = new ZFMLL\Module\Manager($appConfig['modules']);
 $moduleManager->events()->attachAggregate($defaultListeners);
 $moduleManager->loadModules();
 
 $bootstrap   = new Zend\Mvc\Bootstrap($defaultListeners->getConfigListener()->getMergedConfig());
-$application = new ZFBook\Mvc\Application();
+$application = new ZFMLL\Mvc\Application();
 $bootstrap->bootstrap($application);
 $application->run()->send();

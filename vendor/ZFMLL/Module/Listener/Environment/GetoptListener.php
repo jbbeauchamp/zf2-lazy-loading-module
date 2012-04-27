@@ -1,9 +1,9 @@
 <?php
 
-namespace ZFBook\Module\Listener\Environment;
+namespace ZFMLL\Module\Listener\Environment;
 
-use ZFBook\Module\Listener\AbstractListener,
-    ZFBook\Module\ModuleEvent,
+use ZFMLL\Module\Listener\AbstractListener,
+    ZFMLL\Module\ModuleEvent,
     Zend\Console\Getopt;
 
 class GetoptListener extends AbstractListener

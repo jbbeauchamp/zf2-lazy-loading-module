@@ -10,7 +10,7 @@ class CronController extends AbstractController
     public function cronAction()
     {
         return array(
-            'modules' => $this->getLocator()->get('ZFBook\Module\Manager')->getModules()
+            'modules' => $this->getLocator()->get('ZFMLL\Module\Manager')->getModules()
         );
     }
 }

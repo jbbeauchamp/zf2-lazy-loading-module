@@ -10,7 +10,7 @@ class AppController extends ActionController
     public function appAction()
     {
         return array(
-            'modules' => $this->getLocator()->get('ZFBook\Module\Manager')->getModules()
+            'modules' => $this->getLocator()->get('ZFMLL\Module\Manager')->getModules()
         );
     }
     
