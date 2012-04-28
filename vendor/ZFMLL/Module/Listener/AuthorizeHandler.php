@@ -2,7 +2,7 @@
 
 namespace ZFMLL\Module\Listener;
 
-use ZFMLL\Module\ModuleEvent;
+use Zend\Module\ModuleEvent;
 
 interface AuthorizeHandler
 {

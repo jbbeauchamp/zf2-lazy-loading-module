@@ -4,11 +4,11 @@ namespace ZFMLL\Module\Listener\Config;
 
 class LazyLoading
 {
-	/**
-	 * Authorize Listener by module name
-	 * @var array
-	 */
-	protected $listeners = array();
+    /**
+     * Authorize Listener by module name
+     * @var array
+     */
+    protected $listeners = array();
 	
 	/**
      * @param  array|Traversable|null $options

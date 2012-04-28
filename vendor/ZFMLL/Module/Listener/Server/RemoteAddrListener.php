@@ -17,6 +17,9 @@ class RemoteAddrListener extends AbstractListener
      */
     public function authorizeModule($moduleName)
     {
+        if(is_string($this->config)) {
+            $this->config = array($this->config);
+        }
         return in_array($this->getRequest()->server()->get('REMOTE_ADDR'), $this->config);
     }
 }

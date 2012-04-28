@@ -21,10 +21,10 @@ class Manager extends BaseManager
 		
         $modules = array();
     	foreach ($this->getModules() as $moduleName) {
-        	$auth = $this->loadModuleAuth($moduleName);
-        	if($auth) {
-        		$modules[] = $moduleName;
-        	}
+            $auth = $this->loadModuleAuth($moduleName);
+            if($auth) {
+                $modules[] = $moduleName;
+            }
         }
         $this->setModules($modules);
        	

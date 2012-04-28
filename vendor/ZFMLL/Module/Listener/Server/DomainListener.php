@@ -19,7 +19,7 @@ class DomainListener extends AbstractListener
      */
     public function authorizeModule($moduleName)
     {
-        return $this->getRequest()->server()->get('SERVER_NAME') == $this->config;
+        return $this->getRequest()->uri()->getHost() == $this->config;
     }
     
     /**
@@ -29,6 +29,6 @@ class DomainListener extends AbstractListener
      */
     public function environment(ModuleEvent $e)
     {
-    	return $this->getRequest()->server()->get('SERVER_NAME');
+    	return $this->getRequest()->uri()->getHost();
     }
 }

@@ -17,6 +17,6 @@ class HttpsListener extends AbstractListener
      */
     public function authorizeModule($moduleName)
     {
-        return $this->getRequest()->server()->get('HTTPS') != $this->config;
+        return $this->getRequest()->server()->get('HTTPS') == $this->config;
     }
 }

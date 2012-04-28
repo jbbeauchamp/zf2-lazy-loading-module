@@ -3,7 +3,7 @@
 namespace ZFMLL\Module\Listener;
 
 use Zend\Module\Listener\ConfigListener as BaseConfigListener,
-	Zend\Module\ModuleEvent;
+    Zend\Module\ModuleEvent;
 
 class ConfigListener extends BaseConfigListener
 {
@@ -31,11 +31,11 @@ class ConfigListener extends BaseConfigListener
     public function loadModulesPre(ModuleEvent $e)
     {
     	if($this->getOptions()->getConfigCacheEnabled()) {
-    		$this->getOptions()->setConfigCacheKey(implode('.',$e->getTarget()->getModules()).'.'.$this->getOptions()->getConfigCacheKey());
-    		if ($this->hasCachedConfig()) {
-    			$this->skipConfig = true;
-    			$this->setMergedConfig($this->getCachedConfig());
-    		}
+            $this->getOptions()->setConfigCacheKey(implode('.',$e->getTarget()->getModules()).'.'.$this->getOptions()->getConfigCacheKey());
+            if ($this->hasCachedConfig()) {
+                $this->skipConfig = true;
+                $this->setMergedConfig($this->getCachedConfig());
+            }
     	}
         return parent::loadModulesPre($e);
     }

@@ -2,7 +2,8 @@
 
 namespace ZFMLL\Module\Listener;
 
-use ZFMLL\Module\ModuleEvent;
+use ZFMLL\Module\ModuleEvent,
+    Zend\Module\ModuleEvent as BaseModuleEvent;
 
 class AbstractListener implements AuthorizeHandler, EnvironmentHandler
 {
@@ -18,31 +19,35 @@ class AbstractListener implements AuthorizeHandler, EnvironmentHandler
      */
     protected $config;
 	
-	/**
-	 * Authorize listener by module name
-	 * @var array()
-	 */
-	protected $lazyLoading;
-	
-	public function __construct($lazyLoading=null)
-	{
-		if($lazyLoading) {
-			$this->setLazyLoading($lazyLoading);
-		}
-	}
+    /**
+     * Authorize listener by module name
+     * @var array()
+     */
+    protected $lazyLoading = array();
+
+    /**
+     *
+     * @param array $lazyLoading 
+     */
+    public function __construct($lazyLoading = null)
+    {
+        if($lazyLoading) {
+            $this->setLazyLoading($lazyLoading);
+        }
+    }
 	
     /**
      * 
      * @param ModuleEvent $e
      * @return boolean 
      */
-    public function authorize(ModuleEvent $e)
+    public function authorize(BaseModuleEvent $e)
     {
         $moduleName = $e->getModuleName();
         $moduleName = strtolower($moduleName);
-        $this->config = $this->getConfig($moduleName);
-        if(!$this->lazyLoading->hasListener($moduleName, $this->name)) {
-        	return true;
+        $this->config = $this->getLazyLoadingConfig($moduleName);
+        if(!$this->getLazyLoading()->hasListener($moduleName, $this->name)) {
+            return true;
         }
         return $this->authorizeModule($moduleName);
     }
@@ -57,23 +62,26 @@ class AbstractListener implements AuthorizeHandler, EnvironmentHandler
         return null;
     }
     
-    public function getConfig($moduleName)
+    public function getLazyLoadingConfig($moduleName)
     {
-    	return $this->lazyLoading->getListenerConfig($moduleName, $this->name);
+    	return $this->getLazyLoading()->getListenerConfig($moduleName, $this->name);
     }
     
-	public function getLazyLoading()
+    public function getLazyLoading()
     {
+        if(!$this->lazyLoading) {
+            $this->setLazyLoading(array());
+        }
     	return $this->lazyLoading;
     }
     
     public function setLazyLoading($lazyLoading)
     {
     	if(!$lazyLoading instanceof Config\LazyLoading) {
-    		$this->lazyLoading = new Config\LazyLoading($lazyLoading);
+            $this->lazyLoading = new Config\LazyLoading($lazyLoading);
     	}
     	else {
-    		$this->lazyLoading = $lazyLoading;
+            $this->lazyLoading = $lazyLoading;
     	}
     }
 }
