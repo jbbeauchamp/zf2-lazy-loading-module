@@ -5,7 +5,7 @@ namespace Zend\Di\Definition;
 use Zend\Code\Scanner\DerivedClassScanner,
     Zend\Code\Scanner\AggregateDirectoryScanner,
     Zend\Code\Scanner\DirectoryScanner,
-        Zend\Code\Scanner\FileScanner,
+    Zend\Code\Scanner\FileScanner,
     
     Zend\Di\Definition\Annotation,
     Zend\Code\Annotation\AnnotationManager,
