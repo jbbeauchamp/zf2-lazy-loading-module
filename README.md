@@ -7,6 +7,7 @@ Introduction
 ------------
 
 For this project, i redefined a party of the module manager to have a lazy loading and increase the performance.
+Project exemple is available on [the loazy loading module website](http://lazy-loading.zend-framework-2.fr/)
 
 Lazy Loading module usage
 ------------
@@ -74,3 +75,26 @@ The config to load module only on port 443 and ip on white list, with config/app
 Filter available are : argument in command line, sapi, domain, https protocol, server port, url and remote address.
 
 The cache key will be automatically update with the module loaded.
+Just update index with ZFMLL library to use lazy loading :
+
+    <?php
+
+    chdir(dirname(__DIR__));
+    require_once (getenv('ZF2_PATH') ?: 'vendor/ZendFramework/library') . '/Zend/Loader/AutoloaderFactory.php';
+
+    Zend\Loader\AutoloaderFactory::factory();
+    Zend\Loader\AutoloaderFactory::factory(array('Zend\Loader\ClassMapAutoloader'=>array(include 'config/autoload_classmap.php')));
+
+    $appConfig = include 'config/application.config.php';
+
+    $listenerOptions  = new ZFMLL\Module\Listener\ListenerOptions($appConfig['module_listener_options']);
+    $defaultListeners = new ZFMLL\Module\Listener\EnvironmentListenerAggregate($listenerOptions);
+
+    $moduleManager = new ZFMLL\Module\Manager($appConfig['modules']);
+    $moduleManager->events()->attachAggregate($defaultListeners);
+    $moduleManager->loadModules();
+
+    $bootstrap   = new Zend\Mvc\Bootstrap($defaultListeners->getConfigListener()->getMergedConfig());
+    $application = new ZFMLL\Mvc\Application();
+    $bootstrap->bootstrap($application);
+    $application->run()->send();

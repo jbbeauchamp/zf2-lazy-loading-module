@@ -4,14 +4,15 @@ namespace Application;
 
 use Zend\Module\Manager,
     Zend\EventManager\StaticEventManager,
-    Zend\Module\Consumer\AutoloaderProvider;
+    Zend\Module\Consumer\AutoloaderProvider,
+    Zend\Mvc\MvcEvent;
 
 class Module implements AutoloaderProvider
 {
     public function init(Manager $moduleManager)
     {
         $events = StaticEventManager::getInstance();
-        $events->attach('bootstrap', 'bootstrap', array($this, 'initializeView'), 100);
+        $events->attach('bootstrap', MvcEvent::EVENT_BOOTSTRAP, array($this, 'initializeView'), 100);
     }
 
     public function getAutoloaderConfig()
