@@ -1,7 +1,7 @@
 zf2-lazy-loading-module
 ==============
 
-Version 0.2 Created by [Vincent Blanchon](http://developpeur-zend-framework.fr/)
+Version 1.0beta Created by [Vincent Blanchon](http://developpeur-zend-framework.fr/)
 
 Introduction
 ------------
