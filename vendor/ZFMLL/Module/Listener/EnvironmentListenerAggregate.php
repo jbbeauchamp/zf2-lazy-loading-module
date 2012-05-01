@@ -27,13 +27,12 @@ class EnvironmentListenerAggregate extends DefaultListenerAggregate
         
         $getoptListener = new Environment\GetoptListener($lazyLoading);
         $sapiListener = new Environment\SapiListener($lazyLoading);
-		
+        
         $this->listeners[] = $events->attach('loadModuleAuth', array($getoptListener, 'authorize'));
         $this->listeners[] = $events->attach('loadModuleAuth', array($sapiListener, 'authorize'));
-
         $this->listeners[] = $events->attach('routeModule.environment', array($getoptListener, 'environment'));
         $this->listeners[] = $events->attach('routeModule.environment', array($sapiListener, 'environment'));
-            
+        
         $this->listeners[] = $events->attach('loadModuleAuth', array(new Server\RemoteAddrListener($lazyLoading), 'authorize'));
         $this->listeners[] = $events->attach('loadModuleAuth', array(new Server\HttpsListener($lazyLoading), 'authorize'));
         $this->listeners[] = $events->attach('loadModuleAuth', array(new Server\PortListener($lazyLoading), 'authorize'));

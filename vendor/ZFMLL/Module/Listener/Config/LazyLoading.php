@@ -39,12 +39,12 @@ class LazyLoading
             ));
         }
 
-        foreach ($options as $key => $value) {
-        	$key = strtolower($key);
-            if(!isset($this->listeners[$key])) {
-            	$this->listeners[$key] = array();
+        foreach ($options as $moduleName => $value) {
+            $moduleName = strtolower($moduleName);
+            if(!isset($this->listeners[$moduleName])) {
+            	$this->listeners[$moduleName] = array();
             }
-            $this->listeners[$key] = array_merge($this->listeners[$key], $value);
+            $this->listeners[$moduleName] = array_merge($this->listeners[$moduleName], $value);
         }
     }
     
@@ -77,14 +77,14 @@ class LazyLoading
      */
     public function getListenerConfig($moduleName, $listener)
     {
-    	 $moduleName = strtolower($moduleName);
-    	 if(!isset($this->listeners[$moduleName])) {
-    	 	return array();
-    	 }
-    	 if(!isset($this->listeners[$moduleName][$listener])) {
-    	 	return array();
-    	 }
-    	 return $this->listeners[$moduleName][$listener];
+        $moduleName = strtolower($moduleName);
+        if(!isset($this->listeners[$moduleName])) {
+           return array();
+        }
+        if(!isset($this->listeners[$moduleName][$listener])) {
+           return array();
+        }
+        return $this->listeners[$moduleName][$listener];
     }
     
     /**
@@ -96,9 +96,18 @@ class LazyLoading
     {
     	$moduleName = strtolower($moduleName);
     	if(!isset($this->listeners[$moduleName])) {
-    	 	return false;
+            return false;
     	}
     	
     	return array_key_exists($listener, $this->listeners[$moduleName]);
+    }
+    
+    /**
+     * Get config has a module name
+     * @param string $moduleName 
+     */
+    public function hasModuleInConfig($moduleName)
+    {
+        return isset($this->listeners[$moduleName]);
     }
 }

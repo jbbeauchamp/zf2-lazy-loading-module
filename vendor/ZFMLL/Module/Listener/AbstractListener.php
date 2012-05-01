@@ -10,7 +10,7 @@ namespace ZFMLL\Module\Listener;
 use ZFMLL\Module\ModuleEvent,
     Zend\Module\ModuleEvent as BaseModuleEvent;
 
-class AbstractListener implements AuthorizeHandler, EnvironmentHandler
+abstract class AbstractListener implements AuthorizeHandler, EnvironmentHandler
 {
 	/**
      * Lister name, redefined in listener class
@@ -42,36 +42,57 @@ class AbstractListener implements AuthorizeHandler, EnvironmentHandler
     }
 	
     /**
-     * 
+     * Authorize loading module listener
      * @param ModuleEvent $e
      * @return boolean 
      */
     public function authorize(BaseModuleEvent $e)
-    {
+    {   
         $moduleName = $e->getModuleName();
         $moduleName = strtolower($moduleName);
-        $this->config = $this->getLazyLoadingConfig($moduleName);
+        if(!$this->getLazyLoading()->hasModuleInConfig($moduleName)) {
+            $e->stopPropagation(true);
+            return true;
+        }
         if(!$this->getLazyLoading()->hasListener($moduleName, $this->name)) {
             return true;
         }
+        $this->config = $this->getLazyLoadingConfig($moduleName);
         return $this->authorizeModule($moduleName);
     }
     
+    /**
+     * Authorize loading module
+     * @param type $module
+     * @return type 
+     */
     public function authorizeModule($module)
     {
         return false;
     }
     
+    /**
+     * Get environnement value
+     */
     public function environment(ModuleEvent $e)
     {
         return null;
     }
     
+    /**
+     * Get the lazy loading config for a module
+     * @param type $moduleName
+     * @return array 
+     */
     public function getLazyLoadingConfig($moduleName)
     {
     	return $this->getLazyLoading()->getListenerConfig($moduleName, $this->name);
     }
     
+    /**
+     * Get lazy loading config
+     * @return Config\LazyLoading 
+     */
     public function getLazyLoading()
     {
         if(!$this->lazyLoading) {
@@ -80,6 +101,10 @@ class AbstractListener implements AuthorizeHandler, EnvironmentHandler
     	return $this->lazyLoading;
     }
     
+    /**
+     * Set lazy loading config
+     * @param LazyLoading $lazyLoading 
+     */
     public function setLazyLoading($lazyLoading)
     {
     	if(!$lazyLoading instanceof Config\LazyLoading) {
@@ -88,5 +113,14 @@ class AbstractListener implements AuthorizeHandler, EnvironmentHandler
     	else {
             $this->lazyLoading = $lazyLoading;
     	}
+    }
+    
+    /**
+     * Get listener name
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
     }
 }

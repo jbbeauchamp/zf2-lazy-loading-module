@@ -23,7 +23,7 @@ class Manager extends BaseManager
         if (true === $this->modulesAreLoaded) {
             return $this;
         }
-		
+        
         $modules = array();
     	foreach ($this->getModules() as $moduleName) {
             $auth = $this->loadModuleAuth($moduleName);
@@ -52,6 +52,7 @@ class Manager extends BaseManager
         $result = $this->events()->trigger(__FUNCTION__, $this, $event, function($r) {
             return !$r;
         });
+        $event->stopPropagation(false);
         
         if(!$result->last()) {
             return false;
