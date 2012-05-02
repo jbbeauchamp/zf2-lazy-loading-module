@@ -21,23 +21,12 @@ class EnvironmentListenerAggregate extends DefaultListenerAggregate
      */
     public function attach(EventCollection $events)
     {	
-    	// get lazy loading config
         $options = $this->getOptions();
         $lazyLoading = $options->getLazyLoading();
         
-        $getoptListener = new Environment\GetoptListener($lazyLoading);
-        $sapiListener = new Environment\SapiListener($lazyLoading);
-        
-        $this->listeners[] = $events->attach('loadModuleAuth', array($getoptListener, 'authorize'));
-        $this->listeners[] = $events->attach('loadModuleAuth', array($sapiListener, 'authorize'));
-        $this->listeners[] = $events->attach('routeModule.environment', array($getoptListener, 'environment'));
-        $this->listeners[] = $events->attach('routeModule.environment', array($sapiListener, 'environment'));
-        
-        $this->listeners[] = $events->attach('loadModuleAuth', array(new Server\RemoteAddrListener($lazyLoading), 'authorize'));
-        $this->listeners[] = $events->attach('loadModuleAuth', array(new Server\HttpsListener($lazyLoading), 'authorize'));
-        $this->listeners[] = $events->attach('loadModuleAuth', array(new Server\PortListener($lazyLoading), 'authorize'));
-        $this->listeners[] = $events->attach('loadModuleAuth', array(new Server\DomainListener($lazyLoading), 'authorize'));
-        $this->listeners[] = $events->attach('loadModuleAuth', array(new Server\UrlListener($lazyLoading), 'authorize'));
+        $listenerManager = new ListenerManager($lazyLoading);
+        $this->listeners[] = $events->attach('loadModuleAuth', array($listenerManager, 'authorize'));
+        $this->listeners[] = $events->attach('loadModuleAuth.environment', array($listenerManager, 'environment'));
         
         return parent::attach($events);
     }

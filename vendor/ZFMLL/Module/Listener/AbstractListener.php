@@ -12,12 +12,6 @@ use ZFMLL\Module\ModuleEvent,
 
 abstract class AbstractListener implements AuthorizeHandler, EnvironmentHandler
 {
-	/**
-     * Lister name, redefined in listener class
-     * @var string
-     */
-    protected $name = '';
-    
     /**
      * Current config
      * @var mixed
@@ -29,36 +23,16 @@ abstract class AbstractListener implements AuthorizeHandler, EnvironmentHandler
      * @var array()
      */
     protected $lazyLoading = array();
-
-    /**
-     *
-     * @param array $lazyLoading 
-     */
-    public function __construct($lazyLoading = null)
-    {
-        if($lazyLoading) {
-            $this->setLazyLoading($lazyLoading);
-        }
-    }
 	
     /**
-     * Authorize loading module listener
-     * @param ModuleEvent $e
-     * @return boolean 
+     * 
+     * @param mixed $config
      */
-    public function authorize(BaseModuleEvent $e)
-    {   
-        $moduleName = $e->getModuleName();
-        $moduleName = strtolower($moduleName);
-        if(!$this->getLazyLoading()->hasModuleInConfig($moduleName)) {
-            $e->stopPropagation(true);
-            return true;
-        }
-        if(!$this->getLazyLoading()->hasListener($moduleName, $this->name)) {
-            return true;
-        }
-        $this->config = $this->getLazyLoadingConfig($moduleName);
-        return $this->authorizeModule($moduleName);
+    public function __construct($config = null)
+    {
+    	if($config) {
+            $this->setConfig($config);
+    	}
     }
     
     /**
@@ -74,53 +48,27 @@ abstract class AbstractListener implements AuthorizeHandler, EnvironmentHandler
     /**
      * Get environnement value
      */
-    public function environment(ModuleEvent $e)
+    public function environment($param)
     {
         return null;
     }
     
     /**
-     * Get the lazy loading config for a module
-     * @param type $moduleName
-     * @return array 
+     * Get config
+     * @return mixed
      */
-    public function getLazyLoadingConfig($moduleName)
+    public function getConfig()
     {
-    	return $this->getLazyLoading()->getListenerConfig($moduleName, $this->name);
+    	return $this->config;
     }
     
     /**
-     * Get lazy loading config
-     * @return Config\LazyLoading 
+     * Set config
+     * @param mixed
      */
-    public function getLazyLoading()
-    {
-        if(!$this->lazyLoading) {
-            $this->setLazyLoading(array());
-        }
-    	return $this->lazyLoading;
-    }
-    
-    /**
-     * Set lazy loading config
-     * @param LazyLoading $lazyLoading 
-     */
-    public function setLazyLoading($lazyLoading)
-    {
-    	if(!$lazyLoading instanceof Config\LazyLoading) {
-            $this->lazyLoading = new Config\LazyLoading($lazyLoading);
-    	}
-    	else {
-            $this->lazyLoading = $lazyLoading;
-    	}
-    }
-    
-    /**
-     * Get listener name
-     * @return string
-     */
-    public function getName()
-    {
-        return $this->name;
+    public function setConfig($config)
+    {   
+    	$this->config = $config;
+    	return $this;
     }
 }

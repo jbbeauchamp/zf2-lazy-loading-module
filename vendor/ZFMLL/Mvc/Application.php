@@ -23,8 +23,9 @@ class Application extends ZFApplication
     {
         $manager = $this->getLocator()->get('ZFMLL\Module\Manager');
         $event = $manager->getEvent();
+        $event->setParameterListener('getopt');
         $event->setParameterEnvironnement('cron');
-        $result = $manager->events()->trigger('routeModule.environment', $this, $event, function($r) {
+        $result = $manager->events()->trigger('loadModuleAuth.environment', $this, $event, function($r) {
             return is_string($r) && strlen($r) > 0;
         });
         

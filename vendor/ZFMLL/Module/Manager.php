@@ -32,7 +32,7 @@ class Manager extends BaseManager
             }
         }
         $this->setModules($modules);
-       	
+        
         return parent::loadModules();
     }
 	
@@ -52,7 +52,6 @@ class Manager extends BaseManager
         $result = $this->events()->trigger(__FUNCTION__, $this, $event, function($r) {
             return !$r;
         });
-        $event->stopPropagation(false);
         
         if(!$result->last()) {
             return false;

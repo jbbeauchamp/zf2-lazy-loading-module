@@ -11,12 +11,6 @@ use ZFMLL\Module\ModuleEvent;
 
 class DomainListener extends AbstractListener
 {
-	/**
-     * Lister name
-     * @var string
-     */
-    protected $name = 'domain';
-	
     /**
      * 
      * @param string $moduleName
@@ -24,7 +18,8 @@ class DomainListener extends AbstractListener
      */
     public function authorizeModule($moduleName)
     {
-        return $this->getRequest()->uri()->getHost() == $this->config;
+    	$hostname = isset($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : $_SERVER['HTTP_HOST'];
+        return $hostname === $this->config;
     }
     
     /**
@@ -32,8 +27,8 @@ class DomainListener extends AbstractListener
      * @param ModuleEvent $e
      * @return string 
      */
-    public function environment(ModuleEvent $e)
+    public function environment($param)
     {
-    	return $this->getRequest()->uri()->getHost();
+    	return isset($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : $_SERVER['HTTP_HOST'];
     }
 }

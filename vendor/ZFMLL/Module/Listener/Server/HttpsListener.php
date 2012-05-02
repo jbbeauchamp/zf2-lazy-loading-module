@@ -9,12 +9,6 @@ namespace ZFMLL\Module\Listener\Server;
 
 class HttpsListener extends AbstractListener
 {
-	/**
-     * Lister name
-     * @var string
-     */
-    protected $name = 'https';
-	
     /**
      * 
      * @param string $moduleName
@@ -22,6 +16,6 @@ class HttpsListener extends AbstractListener
      */
     public function authorizeModule($moduleName)
     {
-        return $this->getRequest()->server()->get('HTTPS') == $this->config;
+        return $_SERVER['HTTPS'] == $this->config;
     }
 }

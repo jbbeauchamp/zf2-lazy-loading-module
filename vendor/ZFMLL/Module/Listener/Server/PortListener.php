@@ -9,12 +9,6 @@ namespace ZFMLL\Module\Listener\Server;
 
 class PortListener extends AbstractListener
 {
-	/**
-     * Lister name
-     * @var string
-     */
-    protected $name = 'port';
-	
     /**
      * 
      * @param string $moduleName
@@ -22,6 +16,6 @@ class PortListener extends AbstractListener
      */
     public function authorizeModule($moduleName)
     {
-        return $this->getRequest()->server()->get('SERVER_PORT') == $this->config;
+        return $_SERVER['SERVER_PORT'] == $this->config;
     }
 }

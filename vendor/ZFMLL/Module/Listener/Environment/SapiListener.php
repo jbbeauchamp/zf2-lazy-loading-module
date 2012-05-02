@@ -12,12 +12,6 @@ use ZFMLL\Module\Listener\AbstractListener,
 
 class SapiListener extends AbstractListener
 {
-	/**
-     * Lister name
-     * @var string
-     */
-    protected $name = 'sapi';
-	
     /**
      * 
      * @param string $module
@@ -25,7 +19,7 @@ class SapiListener extends AbstractListener
      */
     public function authorizeModule($moduleName)
     {
-        return php_sapi_name() == $this->config;
+        return php_sapi_name() === $this->config;
     }
     
     /**
@@ -33,20 +27,19 @@ class SapiListener extends AbstractListener
      * @param ModuleEvent $e
      * @return string 
      */
-    public function environment(ModuleEvent $e)
+    public function environment($param)
     {
     	if(strtolower(ini_get('register_argc_argv'))!='on' && ini_get('register_argc_argv')!='1')
     	{
-    		return null;
+            return null;
     	}
     	
     	$argv = $_SERVER['argv'];
-    	$parameter = $e->getParameterEnvironnement();
     	foreach($argv as $arg) {
-    		$match = array();
-    		if(preg_match('#^--'.$parameter.'=(.*)$#', $arg, $match)) {
-    			return $match[1];
-    		}
+            $match = array();
+            if(preg_match('#^--'.$param.'=(.*)$#', $arg, $match)) {
+                    return $match[1];
+            }
     	}
         return null;
     }

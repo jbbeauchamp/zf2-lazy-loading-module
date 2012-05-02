@@ -12,9 +12,9 @@ use ZFMLL\Module\ModuleEvent;
 interface EnvironmentHandler
 {
     /**
-     * 
-     * @param ModuleEvent $e
-     * @return boolean 
+     * Get param environment
+     * @param string $params
+     * @return mixed 
      */
-    public function environment(ModuleEvent $e);
+    public function environment($param);
 }

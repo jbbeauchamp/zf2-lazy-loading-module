@@ -10,10 +10,16 @@ namespace ZFMLL\Module\Listener\Server;
 class RemoteAddrListener extends AbstractListener
 {
 	/**
-     * Lister name
-     * @var string
+     * Set config
+     * @param mixed
      */
-    protected $name = 'remote_addr';
+    public function setConfig($config)
+    {   
+    	if(is_string($config)) {
+            $config = array($config);
+        }
+    	return parent::setConfig($config);
+    }
 	
     /**
      * 
@@ -22,9 +28,6 @@ class RemoteAddrListener extends AbstractListener
      */
     public function authorizeModule($moduleName)
     {
-        if(is_string($this->config)) {
-            $this->config = array($this->config);
-        }
-        return in_array($this->getRequest()->server()->get('REMOTE_ADDR'), $this->config);
+        return in_array($_SERVER['REMOTE_ADDR'], $this->config);
     }
 }

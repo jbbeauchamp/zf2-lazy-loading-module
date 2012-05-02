@@ -11,12 +11,6 @@ use ZFMLL\Module\ModuleEvent;
 
 class UrlListener extends AbstractListener
 {
-	/**
-     * Lister name
-     * @var string
-     */
-    protected $name = 'url';
-	
     /**
      * 
      * @param string $moduleName
@@ -25,10 +19,10 @@ class UrlListener extends AbstractListener
     public function authorizeModule($moduleName)
     {
     	if(isset($this->config['static'])) {
-    		return $this->getRequest()->getRequestUri() == $this->config['static'];
+    		return $_SERVER['REQUEST_URI'] == $this->config['static'];
     	}
     	else if(isset($this->config['regex'])) {
-    		return preg_match('(^' . $this->config['regex'] . '$)', $this->getRequest()->getRequestUri());
+    		return preg_match('(^' . $this->config['regex'] . '$)', $_SERVER['REQUEST_URI']);
     	}
         return false;
     }
@@ -38,7 +32,7 @@ class UrlListener extends AbstractListener
      * @param ModuleEvent $e
      * @return string 
      */
-    public function environment(ModuleEvent $e)
+    public function environment($param)
     {
     	return $this->getRequest()->getRequestUri();
     }

@@ -11,15 +11,52 @@ use Zend\Module\ModuleEvent as BaseEvent;
 
 class ModuleEvent extends BaseEvent
 {
+    /**
+     * Listener to use
+     * @var string
+     */
+    protected $parameterListener;
+    
+    /**
+     * Parameter to get
+     * @var string
+     */
     protected $parameterEnvironnement;
 	
+    /**
+     * Get listener to use
+     * @param string $parameterListener
+     */
+    public function getParameterListener()
+    {
+    	return $this->parameterListener;
+    }
+    
+    /**
+     * Set listener to use
+     * @param string $parameterListener
+     */
+    public function setParameterListener($parameterListener)
+    {
+    	$this->parameterListener = $parameterListener;
+    	return $this;
+    }
+    
+    /**
+     * Get parameter listener
+     */
     public function getParameterEnvironnement()
     {
     	return $this->parameterEnvironnement;
     }
     
-	public function setParameterEnvironnement($parameterEnvironnement)
+    /**
+     * Set parameter listener
+     * @param string $parameterEnvironnement
+     */
+    public function setParameterEnvironnement($parameterEnvironnement)
     {
-    	return $this->parameterEnvironnement = $parameterEnvironnement;
+    	$this->parameterEnvironnement = $parameterEnvironnement;
+    	return $this;
     }
 }

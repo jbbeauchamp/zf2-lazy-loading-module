@@ -19,17 +19,10 @@ class GetoptListener extends AbstractListener
     protected $getopt;
     
     /**
-     * Lister name
-     * @var string
-     */
-    protected $name = 'getopt';
-    
-    /**
      * get return of parse
      * @var type 
      */
     protected $isBad = false;
-
 
     /**
      *
@@ -71,14 +64,13 @@ class GetoptListener extends AbstractListener
      * @param ModuleEvent $e
      * @return string 
      */
-    public function environment(ModuleEvent $e)
+    public function environment($param)
     {
     	if(strtolower(ini_get('register_argc_argv'))!='on' && ini_get('register_argc_argv')!='1')
     	{
             return null;
     	}
     	
-    	$parameter = $e->getParameterEnvironnement();
-        return $this->getGetopt()->getOption($parameter);
+        return $this->getGetopt()->getOption($param);
     }
 }

@@ -61,53 +61,13 @@ class LazyLoading
      * Get listener name by module name
      * @param string $moduleName
      */
-    public function getListener($moduleName)
+    public function getListenersModule($moduleName)
     {
     	 $moduleName = strtolower($moduleName);
     	 if(!isset($this->listeners[$moduleName])) {
-    	 	return array();
+            return array();
     	 }
     	 
     	 return $this->listeners[$moduleName];
-    }
- 
-    /**
-     * Get config listener name by module name
-     * @param mixed
-     */
-    public function getListenerConfig($moduleName, $listener)
-    {
-        $moduleName = strtolower($moduleName);
-        if(!isset($this->listeners[$moduleName])) {
-           return array();
-        }
-        if(!isset($this->listeners[$moduleName][$listener])) {
-           return array();
-        }
-        return $this->listeners[$moduleName][$listener];
-    }
-    
-    /**
-     * Has a listener for a module name
-     * @param string $moduleName
-     * @param string $listener
-     */
-    public function hasListener($moduleName, $listener)
-    {
-    	$moduleName = strtolower($moduleName);
-    	if(!isset($this->listeners[$moduleName])) {
-            return false;
-    	}
-    	
-    	return array_key_exists($listener, $this->listeners[$moduleName]);
-    }
-    
-    /**
-     * Get config has a module name
-     * @param string $moduleName 
-     */
-    public function hasModuleInConfig($moduleName)
-    {
-        return isset($this->listeners[$moduleName]);
     }
 }

@@ -59,7 +59,7 @@ class ManagerTest extends TestCase
         // Restore original include_path
         set_include_path($this->includePath);
     }
-
+    
     public function testCanLoadSomeModule()
     {
         $configListener = $this->defaultListeners->getConfigListener();
