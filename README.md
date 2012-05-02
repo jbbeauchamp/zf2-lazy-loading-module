@@ -49,57 +49,61 @@ return array(
 
 2) I want load my "Cron" module only in "cli" sapi and run url in argument :
 
-    <?php 
-    return array(
-        'modules' => array(
-            'Application',
-            'Cron',
-            'Administration'
+```php
+<?php 
+return array(
+    'modules' => array(
+        'Application',
+        'Cron',
+        'Administration'
+    ),
+    'module_listener_options' => array( 
+        'config_cache_enabled' => false,
+        'cache_dir'            => 'data/cache',
+        'module_paths' => array(
+            'Application' => './module/Application',
+            'Cron' => './module/Cron',
+            'Administration' => './module/Administration',
         ),
-        'module_listener_options' => array( 
-            'config_cache_enabled' => false,
-            'cache_dir'            => 'data/cache',
-            'module_paths' => array(
-                'Application' => './module/Application',
-                'Cron' => './module/Cron',
-                'Administration' => './module/Administration',
-            ),
-            'lazy_loading' => array(
-                'Cron' => array(
-                    'getopt' => array('cron=s' => 'cron url'),
-                    'sapi' => 'cli',
-                ),
+        'lazy_loading' => array(
+            'Cron' => array(
+                'getopt' => array('cron=s' => 'cron url'),
+                'sapi' => 'cli',
             ),
         ),
-    );
-    ?>
+    ),
+);
+?>
+```
 
 Filter available are : argument in command line, sapi, domain, https protocol, server port, url and remote address.
 
 The cache key will be automatically update with the module loaded.
 Just update index with ZFMLL library to use lazy loading :
 
-    <?php
+```php
+<?php
 
-    chdir(dirname(__DIR__));
-    require_once (getenv('ZF2_PATH') ?: 'vendor/ZendFramework/library') . '/Zend/Loader/AutoloaderFactory.php';
+chdir(dirname(__DIR__));
+require_once (getenv('ZF2_PATH') ?: 'vendor/ZendFramework/library') . '/Zend/Loader/AutoloaderFactory.php';
 
-    Zend\Loader\AutoloaderFactory::factory();
-    Zend\Loader\AutoloaderFactory::factory(array('Zend\Loader\ClassMapAutoloader'=>array(include 'config/autoload_classmap.php')));
+Zend\Loader\AutoloaderFactory::factory();
+Zend\Loader\AutoloaderFactory::factory(array('Zend\Loader\ClassMapAutoloader'=>array(include 'config/autoload_classmap.php')));
 
-    $appConfig = include 'config/application.config.php';
+$appConfig = include 'config/application.config.php';
 
-    $listenerOptions  = new ZFMLL\Module\Listener\ListenerOptions($appConfig['module_listener_options']);
-    $defaultListeners = new ZFMLL\Module\Listener\EnvironmentListenerAggregate($listenerOptions);
+$listenerOptions  = new ZFMLL\Module\Listener\ListenerOptions($appConfig['module_listener_options']);
+$defaultListeners = new ZFMLL\Module\Listener\EnvironmentListenerAggregate($listenerOptions);
 
-    $moduleManager = new ZFMLL\Module\Manager($appConfig['modules']);
-    $moduleManager->events()->attachAggregate($defaultListeners);
-    $moduleManager->loadModules();
+$moduleManager = new ZFMLL\Module\Manager($appConfig['modules']);
+$moduleManager->events()->attachAggregate($defaultListeners);
+$moduleManager->loadModules();
 
-    $bootstrap   = new Zend\Mvc\Bootstrap($defaultListeners->getConfigListener()->getMergedConfig());
-    $application = new ZFMLL\Mvc\Application();
-    $bootstrap->bootstrap($application);
-    $application->run()->send();
+$bootstrap   = new Zend\Mvc\Bootstrap($defaultListeners->getConfigListener()->getMergedConfig());
+$application = new ZFMLL\Mvc\Application();
+$bootstrap->bootstrap($application);
+$application->run()->send();
+```
 
 Benchmark
 ------------
@@ -115,26 +119,28 @@ In the first case :
 - 4 modules : Application, Administration, Cron and Blog
 - In each other Application module, a simple class (like in the project code) :
 
-    class Module implements AutoloaderProvider
+```php
+class Module implements AutoloaderProvider
+{
+    public function init(Manager $moduleManager)
     {
-        public function init(Manager $moduleManager)
-        {
-        }
-
-        public function getAutoloaderConfig()
-        {
-            return array(
-                'Zend\Loader\ClassMapAutoloader' => array(
-                    __DIR__ . '/autoload_classmap.php',
-                ),
-            );
-        }
-
-        public function getConfig()
-        {
-            return include __DIR__ . '/config/module.config.php';
-        }
     }
+
+    public function getAutoloaderConfig()
+    {
+        return array(
+            'Zend\Loader\ClassMapAutoloader' => array(
+                __DIR__ . '/autoload_classmap.php',
+            ),
+        );
+    }
+
+    public function getConfig()
+    {
+        return include __DIR__ . '/config/module.config.php';
+    }
+}
+```
 
 => ZFMLL performance increases **up to 5%**.
 
@@ -143,10 +149,12 @@ In the seconde case :
 - 4 modules : Application, Administration, Cron and Blog
 - Cron & Blog have minimal class Module and Administration attach three listeners (listeners function are empty) :
 
-    $events = StaticEventManager::getInstance();
-    $events->attach('bootstrap', MvcEvent::EVENT_BOOTSTRAP, array($this, 'initializeAcl'), 100);
-    $events->attach('bootstrap', MvcEvent::EVENT_BOOTSTRAP, array($this, 'initializeView'), 100);
-    $events->attach('Zend\Module\Manager', 'loadModules.post', array($this, 'initializeNavigation'), -100);
+```php
+$events = StaticEventManager::getInstance();
+$events->attach('bootstrap', MvcEvent::EVENT_BOOTSTRAP, array($this, 'initializeAcl'), 100);
+$events->attach('bootstrap', MvcEvent::EVENT_BOOTSTRAP, array($this, 'initializeView'), 100);
+$events->attach('Zend\Module\Manager', 'loadModules.post', array($this, 'initializeNavigation'), -100);
+```
 
 => ZFMLL performance increases **up to 65%**.
 
@@ -155,8 +163,10 @@ In the third case :
 - 4 modules :Application, Administration, Cron and Blog
 - Administration attach the same listeners with the second case, and Blog attach one listener (listener function are empty) :
 
-    $events = StaticEventManager::getInstance();
-    $events->attach('bootstrap', MvcEvent::EVENT_BOOTSTRAP, array($this, 'initializeView'), 100);
+```php
+$events = StaticEventManager::getInstance();
+$events->attach('bootstrap', MvcEvent::EVENT_BOOTSTRAP, array($this, 'initializeView'), 100);
+```
 
 => ZFMLL performance increases **up to 75%**.
 
