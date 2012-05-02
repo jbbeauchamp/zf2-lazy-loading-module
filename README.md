@@ -102,10 +102,15 @@ Just update index with ZFMLL library to use lazy loading :
 Benchmark
 ------------
 
+Benchmark condition :
+- no module cache enable
+- 100 modules loading, for each test
+- lastest master branch version (at the May 1st)
+
 In the first case :
 
-- 4 modules :Application, Administration, Cron and Blog
-- In each other Application module, a simple class :
+- 4 modules : Application, Administration, Cron and Blog
+- In each other Application module, a simple class (like in the project code) :
 
     class Module implements AutoloaderProvider
     {
@@ -128,11 +133,11 @@ In the first case :
         }
     }
 
-=> ZFMLL Performance increases up to 5%.
+=> ZFMLL performance increases up to 5%.
 
 In the seconde case :
 
-- 4 modules :Application, Administration, Cron and Blog
+- 4 modules : Application, Administration, Cron and Blog
 - Cron & Blog have minimal class Module and Administration attach three listeners (listeners function are empty) :
 
     $events = StaticEventManager::getInstance();
@@ -140,7 +145,7 @@ In the seconde case :
     $events->attach('bootstrap', MvcEvent::EVENT_BOOTSTRAP, array($this, 'initializeView'), 100);
     $events->attach('Zend\Module\Manager', 'loadModules.post', array($this, 'initializeNavigation'), -100);
 
-=> ZFMLL Performance increases up to 65%.
+=> ZFMLL performance increases up to 65%.
 
 In the third case :
 
@@ -150,6 +155,6 @@ In the third case :
     $events = StaticEventManager::getInstance();
     $events->attach('bootstrap', MvcEvent::EVENT_BOOTSTRAP, array($this, 'initializeView'), 100);
 
-=> ZFMLL Performance increases up to 75%.
+=> ZFMLL performance increases up to 75%.
 
-With a real code in the several listeners, ZFMLL can increase more of 100% performance.
+With a real code in the several listeners, ZFMLL can increase more of 100% performance !
