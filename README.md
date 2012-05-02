@@ -120,6 +120,8 @@ In the first case :
 - In each other Application module, a simple class (like in the project code) :
 
 ```php
+<?php
+
 class Module implements AutoloaderProvider
 {
     public function init(Manager $moduleManager)
@@ -150,6 +152,8 @@ In the seconde case :
 - Cron & Blog have minimal class Module and Administration attach three listeners (listeners function are empty) :
 
 ```php
+<?php
+
 $events = StaticEventManager::getInstance();
 $events->attach('bootstrap', MvcEvent::EVENT_BOOTSTRAP, array($this, 'initializeAcl'), 100);
 $events->attach('bootstrap', MvcEvent::EVENT_BOOTSTRAP, array($this, 'initializeView'), 100);
@@ -164,6 +168,8 @@ In the third case :
 - Administration attach the same listeners with the second case, and Blog attach one listener (listener function are empty) :
 
 ```php
+<?php
+
 $events = StaticEventManager::getInstance();
 $events->attach('bootstrap', MvcEvent::EVENT_BOOTSTRAP, array($this, 'initializeView'), 100);
 ```
