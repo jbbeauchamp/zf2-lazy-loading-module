@@ -105,6 +105,7 @@ Benchmark
 Benchmark condition :
 - no module cache enable
 - 100 modules loading, for each test
+- homepage action
 - lastest master branch version (at the May 1st)
 
 In the first case :
