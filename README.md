@@ -20,30 +20,32 @@ Without that, to load this module is useless.
 
 The config to load module only on port 443 and ip on white list, with config/application.config.php :
 
-    <?php 
-    return array(
-        'modules' => array(
-            'Application',
-            'Cron',
-            'Administration'
+```php
+<?php 
+return array(
+    'modules' => array(
+        'Application',
+        'Cron',
+        'Administration'
+    ),
+    'module_listener_options' => array( 
+        'config_cache_enabled' => false,
+        'cache_dir'            => 'data/cache',
+        'module_paths' => array(
+            'Application' => './module/Application',
+            'Cron' => './module/Cron',
+            'Administration' => './module/Administration',
         ),
-        'module_listener_options' => array( 
-            'config_cache_enabled' => false,
-            'cache_dir'            => 'data/cache',
-            'module_paths' => array(
-                'Application' => './module/Application',
-                'Cron' => './module/Cron',
-                'Administration' => './module/Administration',
-            ),
-            'lazy_loading' => array(
-                'Administration' => array(
-                    'port' => '443',
-                    'remote_addr' => array('127.0.0.1'),
-                ),
+        'lazy_loading' => array(
+            'Administration' => array(
+                'port' => '443',
+                'remote_addr' => array('127.0.0.1'),
             ),
         ),
-    );
-    ?>
+    ),
+);
+?>
+```
 
 2) I want load my "Cron" module only in "cli" sapi and run url in argument :
 
@@ -134,7 +136,7 @@ In the first case :
         }
     }
 
-=> ZFMLL performance increases up to 5%.
+=> ZFMLL performance increases **up to 5%**.
 
 In the seconde case :
 
@@ -146,7 +148,7 @@ In the seconde case :
     $events->attach('bootstrap', MvcEvent::EVENT_BOOTSTRAP, array($this, 'initializeView'), 100);
     $events->attach('Zend\Module\Manager', 'loadModules.post', array($this, 'initializeNavigation'), -100);
 
-=> ZFMLL performance increases up to 65%.
+=> ZFMLL performance increases **up to 65%**.
 
 In the third case :
 
@@ -156,6 +158,6 @@ In the third case :
     $events = StaticEventManager::getInstance();
     $events->attach('bootstrap', MvcEvent::EVENT_BOOTSTRAP, array($this, 'initializeView'), 100);
 
-=> ZFMLL performance increases up to 75%.
+=> ZFMLL performance increases **up to 75%**.
 
 With a real code in the several listeners, ZFMLL can increase more of 100% performance !
