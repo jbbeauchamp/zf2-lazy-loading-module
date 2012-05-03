@@ -7,14 +7,12 @@
 
 namespace ZFMLL\Module\Listener;
 
-use ZFMLL\Module\ModuleEvent;
-
 interface EnvironmentHandler
 {
     /**
-     * Get param environment
+     * Get argument environment
      * @param string $params
      * @return mixed 
      */
-    public function environment($param);
+    public function getArgument($param);
 }

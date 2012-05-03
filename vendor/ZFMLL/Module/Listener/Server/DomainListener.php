@@ -7,7 +7,7 @@
 
 namespace ZFMLL\Module\Listener\Server;
 
-use ZFMLL\Module\ModuleEvent;
+use ZFMLL\Module\Listener\AbstractListener;
 
 class DomainListener extends AbstractListener
 {
@@ -20,15 +20,5 @@ class DomainListener extends AbstractListener
     {
     	$hostname = isset($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : $_SERVER['HTTP_HOST'];
         return $hostname === $this->config;
-    }
-    
-    /**
-     *
-     * @param ModuleEvent $e
-     * @return string 
-     */
-    public function environment($param)
-    {
-    	return isset($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : $_SERVER['HTTP_HOST'];
     }
 }

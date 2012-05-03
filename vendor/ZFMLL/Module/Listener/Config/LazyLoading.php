@@ -47,16 +47,7 @@ class LazyLoading
             $this->listeners[$moduleName] = array_merge($this->listeners[$moduleName], $value);
         }
     }
-    
-    /**
-     * Get listener name by module name
-     * @param string $moduleName
-     */
-    public function getListeners()
-    {    	 
-    	 $this->listeners;
-    }
-    
+        
     /**
      * Get listener name by module name
      * @param string $moduleName

@@ -8,10 +8,10 @@
 namespace ZFMLL\Module\Listener\Environment;
 
 use ZFMLL\Module\Listener\AbstractListener,
-    ZFMLL\Module\ModuleEvent,
+    ZFMLL\Module\Listener\EnvironmentHandler,
     Zend\Console\Getopt;
 
-class GetoptListener extends AbstractListener
+class GetoptListener extends AbstractListener implements EnvironmentHandler
 {
     /**
      * @var Getopt 
@@ -31,8 +31,7 @@ class GetoptListener extends AbstractListener
      */
     public function authorizeModule($moduleName)
     {
-    	if(strtolower(ini_get('register_argc_argv'))!='on' && ini_get('register_argc_argv')!='1')
-    	{
+    	if(strtolower(ini_get('register_argc_argv'))!='on' && ini_get('register_argc_argv')!='1') {
             return false;
     	}
         
@@ -64,10 +63,9 @@ class GetoptListener extends AbstractListener
      * @param ModuleEvent $e
      * @return string 
      */
-    public function environment($param)
+    public function getArgument($param)
     {
-    	if(strtolower(ini_get('register_argc_argv'))!='on' && ini_get('register_argc_argv')!='1')
-    	{
+    	if(strtolower(ini_get('register_argc_argv'))!='on' && ini_get('register_argc_argv')!='1') {
             return null;
     	}
     	

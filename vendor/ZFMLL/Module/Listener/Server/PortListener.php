@@ -7,8 +7,22 @@
 
 namespace ZFMLL\Module\Listener\Server;
 
+use ZFMLL\Module\Listener\AbstractListener;
+
 class PortListener extends AbstractListener
 {
+    /**
+     * Set config
+     * @param mixed
+     */
+    public function setConfig($config)
+    {   
+    	if(!is_array($config)) {
+            $config = array($config);
+        }
+    	return parent::setConfig($config);
+    }
+    
     /**
      * 
      * @param string $moduleName
@@ -16,6 +30,6 @@ class PortListener extends AbstractListener
      */
     public function authorizeModule($moduleName)
     {
-        return $_SERVER['SERVER_PORT'] == $this->config;
+        return in_array($_SERVER['SERVER_PORT'], $this->config);
     }
 }

@@ -7,9 +7,11 @@
 
 namespace ZFMLL\Module\Listener\Server;
 
+use ZFMLL\Module\Listener\AbstractListener;
+
 class RemoteAddrListener extends AbstractListener
 {
-	/**
+    /**
      * Set config
      * @param mixed
      */

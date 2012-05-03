@@ -8,9 +8,9 @@
 namespace ZFMLL\Module\Listener\Environment;
 
 use ZFMLL\Module\Listener\AbstractListener,
-    ZFMLL\Module\ModuleEvent;
+    ZFMLL\Module\Listener\EnvironmentHandler;
 
-class SapiListener extends AbstractListener
+class SapiListener extends AbstractListener implements EnvironmentHandler
 {
     /**
      * 
@@ -27,10 +27,9 @@ class SapiListener extends AbstractListener
      * @param ModuleEvent $e
      * @return string 
      */
-    public function environment($param)
+    public function getArgument($param)
     {
-    	if(strtolower(ini_get('register_argc_argv'))!='on' && ini_get('register_argc_argv')!='1')
-    	{
+    	if(strtolower(ini_get('register_argc_argv'))!='on' && ini_get('register_argc_argv')!='1') {
             return null;
     	}
     	

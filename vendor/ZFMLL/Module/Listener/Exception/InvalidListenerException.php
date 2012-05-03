@@ -9,6 +9,6 @@ namespace ZFMLL\Module\Listener\Exception;
 
 use ZFMLL\Module\Exception as ModuleException;
 
-class InvalidHelperException extends \Exception implements ModuleException
+class InvalidListenerException extends \Exception implements ModuleException
 {
 }

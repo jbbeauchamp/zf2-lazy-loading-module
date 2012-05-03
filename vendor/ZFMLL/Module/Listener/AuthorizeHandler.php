@@ -7,8 +7,6 @@
 
 namespace ZFMLL\Module\Listener;
 
-use Zend\Module\ModuleEvent;
-
 interface AuthorizeHandler
 {
     /**

@@ -26,7 +26,7 @@ class EnvironmentListenerAggregate extends DefaultListenerAggregate
         
         $listenerManager = new ListenerManager($lazyLoading);
         $this->listeners[] = $events->attach('loadModuleAuth', array($listenerManager, 'authorize'));
-        $this->listeners[] = $events->attach('loadModuleAuth.environment', array($listenerManager, 'environment'));
+        $this->listeners[] = $events->attach('loadModuleAuth.argument', array($listenerManager, 'argument'));
         
         return parent::attach($events);
     }

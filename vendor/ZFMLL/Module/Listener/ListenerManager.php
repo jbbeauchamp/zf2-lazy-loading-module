@@ -7,8 +7,7 @@
 
 namespace ZFMLL\Module\Listener;
 
-use ZFMLL\Module\Listener\Server\AbstractListener,
-    ZFMLL\Module\ModuleEvent,
+use ZFMLL\Module\ModuleEvent,
     Zend\Module\ModuleEvent as BaseModuleEvent;
 
 class ListenerManager
@@ -23,7 +22,7 @@ class ListenerManager
      * Lazy loading config
      * @var Config\LazyLoading
      */
-    protected $lazyLoading = array();
+    protected $lazyLoading;
 
     /**
      *
@@ -60,11 +59,18 @@ class ListenerManager
      * Get parameter environment
      * @param ModuleEvent $e
      */
-    public function environment(ModuleEvent $e)
+    public function argument(ModuleEvent $e)
     {
-    	$listener = $e->getParameterListener();
-    	$listenerObject = $this->load($listener);
-    	return $listenerObject->environment($e->getParameterEnvironnement());
+        $listeners = $this->getBroker()->getListeners();
+        foreach($listeners as $listener) {
+            if($listener instanceof EnvironmentHandler) {
+                $argument = $listener->getArgument($e->getParameterArgument());
+                if(null === $argument) {
+                    continue;
+                }
+                return $argument;
+            }
+        }
     }
     
     /**
@@ -122,7 +128,7 @@ class ListenerManager
      */
     public function getLazyLoading()
     {
-        if(!$this->lazyLoading) {
+        if(null === $this->lazyLoading) {
             $this->setLazyLoading(array());
         }
     	return $this->lazyLoading;

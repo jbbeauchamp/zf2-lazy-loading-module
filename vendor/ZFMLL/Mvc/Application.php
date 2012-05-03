@@ -8,8 +8,7 @@
 namespace ZFMLL\Mvc;
 
 use Zend\Mvc\Application as ZFApplication,
-    Zend\Mvc\MvcEvent,
-    Zend\Console\Getopt;
+    Zend\Mvc\MvcEvent;
 
 class Application extends ZFApplication
 {
@@ -17,20 +16,17 @@ class Application extends ZFApplication
      * Route the request
      *
      * @param  MvcEvent $e
-     * @return Router\RouteMatch
+     * @return Zend\Mvc\Router\RouteMatch
      */
     public function route(MvcEvent $e)
     {
         $manager = $this->getLocator()->get('ZFMLL\Module\Manager');
         $event = $manager->getEvent();
-        $event->setParameterListener('getopt');
-        $event->setParameterEnvironnement('cron');
-        $result = $manager->events()->trigger('loadModuleAuth.environment', $this, $event, function($r) {
-            return is_string($r) && strlen($r) > 0;
-        });
+        $event->setParameterArgument('cron');
+        $result = $manager->events()->trigger('loadModuleAuth.argument', $this, $event);
         
-        if(($opt = $result->last())) {
-            $e->getRequest()->setUri($opt);
+        if(($arg = $result->last())) {
+            $e->getRequest()->setUri($arg);
         }
         
         $routeMatch = parent::route($e);

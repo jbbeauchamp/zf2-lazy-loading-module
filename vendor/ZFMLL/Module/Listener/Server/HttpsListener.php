@@ -7,6 +7,8 @@
 
 namespace ZFMLL\Module\Listener\Server;
 
+use ZFMLL\Module\Listener\AbstractListener;
+
 class HttpsListener extends AbstractListener
 {
     /**

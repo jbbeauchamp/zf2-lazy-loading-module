@@ -8,7 +8,7 @@
 namespace ZFMLL\Module\Listener;
 
 use Zend\Loader\PluginBroker,
-	ZFMLL\Module\Listener\Exception\InvalidHelperException;
+	ZFMLL\Module\Listener\Exception\InvalidListenerException;
 
 class ListenerBroker extends PluginBroker
 {
@@ -30,9 +30,17 @@ class ListenerBroker extends PluginBroker
     	// force to use short name
     	$pluginClass = $this->getClassLoader()->getClassName($plugin);
     	if($pluginClass) {
-    		return new $pluginClass();
+            $instance = new $pluginClass();
     	}
-    	return parent::load($plugin, $options);
+    	else {
+            $instance = parent::load($plugin, $options);
+        }
+        
+        if ($this->getRegisterPluginsOnLoad()) {
+            $this->register($plugin, $instance);
+        }
+        
+        return $instance;
     }
     
     /**
@@ -40,13 +48,23 @@ class ListenerBroker extends PluginBroker
      * 
      * @param  mixed $plugin 
      * @return true
-     * @throws Exception\InvalidHelperException
+     * @throws Exception\InvalidListenerException
      */
     protected function validatePlugin($plugin)
     {
     	if (!$plugin instanceof AuthorizeHandler) {
-            throw new InvalidHelperException('Auth listeners must implement ZFMLL\Module\Listener\AuthorizeHandler');
+            throw new InvalidListenerException('Auth listeners must implement ZFMLL\Module\Listener\AuthorizeHandler');
         }
     	return true;
+    }
+    
+    /**
+     * Get list of all loaded listeners
+     * 
+     * @return array
+     */
+    public function getListeners()
+    {
+        return parent::getPlugins();
     }
 }

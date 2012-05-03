@@ -185,4 +185,62 @@ class ManagerTest extends TestCase
         $loadedModules = $moduleManager->getLoadedModules();
         $this->assertEquals(0, count($loadedModules));
     }
+    
+    public function testCanLoadMultipleModulesWithArgumentGetopt()
+    {   
+        $_SERVER['argv'][] = '--cron=url';
+        $configListener = $this->defaultListeners->getOptions()->setLazyLoading(array(
+            'SomeModule' => array('getopt' => array('cron=s' => 'cron url'),),
+        ));
+        $configListener = $this->defaultListeners->getConfigListener();
+        $moduleManager  = new Manager(array('SomeModule'));
+        $moduleManager->events()->attachAggregate($this->defaultListeners);
+        $moduleManager->loadModules();
+        $loadedModules = $moduleManager->getLoadedModules();
+        $this->assertEquals(1, count($loadedModules));
+        $event = $moduleManager->getEvent();
+        $event->setName('loadModuleAuth.argument');
+        $event->setParameterArgument('cron');
+        $results = $moduleManager->events()->trigger($event);
+        $this->assertEquals($results->last(), "url");
+    }
+    
+    public function testCanLoadMultipleModulesWithArgumentSapi()
+    {   
+        $_SERVER['argv'][] = '--cron="url"';
+        $configListener = $this->defaultListeners->getOptions()->setLazyLoading(array(
+            'SomeModule' => array('sapi' => 'cli'),
+        ));
+        $configListener = $this->defaultListeners->getConfigListener();
+        $moduleManager  = new Manager(array('SomeModule'));
+        $moduleManager->events()->attachAggregate($this->defaultListeners);
+        $moduleManager->loadModules();
+        $loadedModules = $moduleManager->getLoadedModules();
+        $this->assertEquals(1, count($loadedModules));
+        $event = $moduleManager->getEvent();
+        $event->setName('loadModuleAuth.argument');
+        $event->setParameterArgument('cron');
+        $results = $moduleManager->events()->trigger($event);
+        $this->assertEquals($results->last(), '"url"');
+    }
+    
+    public function testCanLoadMultipleModulesWithArgumentFail()
+    {   
+        $_SERVER['HTTP_HOST'] = 'zend-framework-2.fr';
+        $_SERVER['argv'][] = '--cron="url"';
+        $configListener = $this->defaultListeners->getOptions()->setLazyLoading(array(
+            'SomeModule' => array('domain' => 'zend-framework-2.fr'),
+        ));
+        $configListener = $this->defaultListeners->getConfigListener();
+        $moduleManager  = new Manager(array('SomeModule'));
+        $moduleManager->events()->attachAggregate($this->defaultListeners);
+        $moduleManager->loadModules();
+        $loadedModules = $moduleManager->getLoadedModules();
+        $this->assertEquals(1, count($loadedModules));
+        $event = $moduleManager->getEvent();
+        $event->setName('loadModuleAuth.argument');
+        $event->setParameterArgument('cron');
+        $results = $moduleManager->events()->trigger($event);
+        $this->assertEquals($results->last(), null);
+    }
 }
