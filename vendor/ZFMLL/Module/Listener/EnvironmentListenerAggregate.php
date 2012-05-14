@@ -7,7 +7,8 @@
 
 namespace ZFMLL\Module\Listener;
 
-use Zend\Module\Listener\DefaultListenerAggregate,
+use Zend\EventManager\EventManagerInterface,
+    Zend\Module\Listener\DefaultListenerAggregate,
     Zend\EventManager\EventCollection,
     Zend\Module\Listener\ConfigMerger;
 
@@ -19,7 +20,7 @@ class EnvironmentListenerAggregate extends DefaultListenerAggregate
      * @param EventCollection $events
      * @return DefaultListenerAggregate
      */
-    public function attach(EventCollection $events)
+    public function attach(EventManagerInterface $events)
     {	
         $options = $this->getOptions();
         $lazyLoading = $options->getLazyLoading();
