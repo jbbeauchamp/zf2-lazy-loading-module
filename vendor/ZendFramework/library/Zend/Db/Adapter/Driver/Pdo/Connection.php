@@ -203,7 +203,8 @@ class Connection implements ConnectionInterface
                     $dsn .= $database;
                     break;
                 default:
-                    $dsn .= (isset($hostname)) ? 'hostname=' . $hostname : '';
+                    $dsn .= (isset($hostname)) ? 'host=' . $hostname : '';
+                    $dsn .= (isset($hostname) && isset($database)) ? ';' : '';
                     $dsn .= (isset($database)) ? 'dbname=' . $database : '';
             }
         } elseif (!isset($dsn)) {
@@ -320,14 +321,20 @@ class Connection implements ConnectionInterface
         $statement = $this->driver->createStatement($sql);
         return $statement;
     }
+
     /**
      * Get last generated id
      * 
      * @return integer 
      */
-    public function getLastGeneratedId()
+    public function getLastGeneratedValue()
     {
-        return $this->resource->lastInsertId();
+        try {
+            return $this->resource->lastInsertId();
+        } catch (\Exception $e) {
+            // do nothing
+        }
+        return false;
     }
 
 }

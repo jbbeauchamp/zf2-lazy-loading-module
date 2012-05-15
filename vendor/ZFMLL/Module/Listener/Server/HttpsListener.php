@@ -18,6 +18,6 @@ class HttpsListener extends AbstractListener
      */
     public function authorizeModule($moduleName)
     {
-        return $_SERVER['HTTPS'] == $this->config;
+        return @$_SERVER['HTTPS'] == $this->config;
     }
 }

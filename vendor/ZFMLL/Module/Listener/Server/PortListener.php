@@ -30,6 +30,6 @@ class PortListener extends AbstractListener
      */
     public function authorizeModule($moduleName)
     {
-        return in_array($_SERVER['SERVER_PORT'], $this->config);
+        return in_array(@$_SERVER['SERVER_PORT'], $this->config);
     }
 }

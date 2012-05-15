@@ -33,7 +33,7 @@ class SapiListener extends AbstractListener implements EnvironmentHandler
             return null;
     	}
     	
-    	$argv = $_SERVER['argv'];
+    	$argv = isset($_SERVER['argv']) ? $_SERVER['argv'] : array();
     	foreach($argv as $arg) {
             $match = array();
             if(preg_match('#^--'.$param.'=(.*)$#', $arg, $match)) {

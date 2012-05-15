@@ -30,6 +30,6 @@ class RemoteAddrListener extends AbstractListener
      */
     public function authorizeModule($moduleName)
     {
-        return in_array($_SERVER['REMOTE_ADDR'], $this->config);
+        return in_array(@$_SERVER['REMOTE_ADDR'], $this->config);
     }
 }

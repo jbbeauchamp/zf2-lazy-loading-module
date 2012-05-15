@@ -20,7 +20,7 @@ return array(
                     'loader' => 'Zend\Mvc\Controller\PluginLoader',
                 ),
             ),
-            'Zend\Mvc\Router\RouteStack' => array(
+            'Zend\Mvc\Router\RouteStackInterface' => array(
                 'parameters' => array(
                     'routes' => array(
                         'home' => array(
@@ -122,7 +122,7 @@ return array(
             ),
             'Zend\View\Helper\Url' => array(
                 'parameters' => array(
-                    'router' => 'Zend\Mvc\Router\RouteStack',
+                    'router' => 'Zend\Mvc\Router\RouteStackInterface',
                 ),
             ),
             'Zend\View\Helper\Doctype' => array(
