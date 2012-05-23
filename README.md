@@ -1,7 +1,7 @@
 ZF2 Lazy loading module
 ==============
 
-Version 1.3 Created by [Vincent Blanchon](http://developpeur-zend-framework.fr/)
+Version 1.4 Created by [Vincent Blanchon](http://developpeur-zend-framework.fr/)
 
 Introduction
 ------------
@@ -21,26 +21,40 @@ Without that, to load this module is useless.
 The config to load module only on port 443 and ip on white list, with config/application.config.php :
 
 ```php
-<?php 
+<?php
 return array(
     'modules' => array(
         'Application',
         'Cron',
-        'Administration'
+        'Administration',
+        'Blog',
     ),
-    'module_listener_options' => array( 
+    'module_listener_options' => array(
+        'config_glob_paths'    => array(
+            'config/autoload/{,*.}{global,local}.php',
+        ),
         'config_cache_enabled' => false,
         'cache_dir'            => 'data/cache',
         'module_paths' => array(
             'Application' => './module/Application',
             'Cron' => './module/Cron',
             'Administration' => './module/Administration',
+            'Blog' => './module/Blog',
         ),
-        'lazy_loading' => array(
+         'lazy_loading' => array(
             'Administration' => array(
                 'port' => '443',
                 'remote_addr' => array('127.0.0.1'),
             ),
+        ),
+    ),
+    'service_manager' => array(
+        'use_defaults' => true,
+        'factories'    => array(
+            'ModuleManager' => 'ZFMLL\Mvc\Service\ModuleManagerFactory',
+        ),
+        'services' => array(
+            'RouteListener' => 'ZFMLL\Mvc\RouteListener',
         ),
     ),
 );
@@ -50,26 +64,40 @@ return array(
 2) I want load my "Cron" module only in "cli" sapi and run url in argument :
 
 ```php
-<?php 
+<?php
 return array(
     'modules' => array(
         'Application',
         'Cron',
-        'Administration'
+        'Administration',
+        'Blog',
     ),
-    'module_listener_options' => array( 
+    'module_listener_options' => array(
+        'config_glob_paths'    => array(
+            'config/autoload/{,*.}{global,local}.php',
+        ),
         'config_cache_enabled' => false,
         'cache_dir'            => 'data/cache',
         'module_paths' => array(
             'Application' => './module/Application',
             'Cron' => './module/Cron',
             'Administration' => './module/Administration',
+            'Blog' => './module/Blog',
         ),
         'lazy_loading' => array(
             'Cron' => array(
                 'getopt' => array('cron=s' => 'cron url'),
                 'sapi' => 'cli',
             ),
+        ),
+    ),
+    'service_manager' => array(
+        'use_defaults' => true,
+        'factories'    => array(
+            'ModuleManager' => 'ZFMLL\Mvc\Service\ModuleManagerFactory',
+        ),
+        'services' => array(
+            'RouteListener' => 'ZFMLL\Mvc\RouteListener',
         ),
     ),
 );
@@ -84,25 +112,27 @@ Just update index with ZFMLL library to use lazy loading :
 ```php
 <?php
 
+use Zend\Loader\AutoloaderFactory,
+    Zend\ServiceManager\ServiceManager,
+    Zend\Mvc\Service\ServiceManagerConfiguration;
+
 chdir(dirname(__DIR__));
 require_once (getenv('ZF2_PATH') ?: 'vendor/ZendFramework/library') . '/Zend/Loader/AutoloaderFactory.php';
 
-Zend\Loader\AutoloaderFactory::factory();
-Zend\Loader\AutoloaderFactory::factory(array('Zend\Loader\ClassMapAutoloader'=>array(include 'config/autoload_classmap.php')));
+// Setup autoloader
+AutoloaderFactory::factory();
+AutoloaderFactory::factory(array('Zend\Loader\ClassMapAutoloader' => array(include 'config/autoload_classmap.php')));
 
-$appConfig = include 'config/application.config.php';
+// Get application stack configuration
+$configuration = include 'config/application.config.php';
 
-$listenerOptions  = new ZFMLL\Module\Listener\ListenerOptions($appConfig['module_listener_options']);
-$defaultListeners = new ZFMLL\Module\Listener\EnvironmentListenerAggregate($listenerOptions);
+// Setup service manager
+$serviceManager = new ServiceManager(new ServiceManagerConfiguration($configuration['service_manager']));
+$serviceManager->setService('ApplicationConfiguration', $configuration);
+$serviceManager->get('ModuleManager')->loadModules();
 
-$moduleManager = new ZFMLL\Module\Manager($appConfig['modules']);
-$moduleManager->events()->attachAggregate($defaultListeners);
-$moduleManager->loadModules();
-
-$bootstrap   = new Zend\Mvc\Bootstrap($defaultListeners->getConfigListener()->getMergedConfig());
-$application = new ZFMLL\Mvc\Application();
-$bootstrap->bootstrap($application);
-$application->run()->send();
+// Run application
+$serviceManager->get('Application')->bootstrap()->run()->send();
 ```
 
 Benchmark
@@ -154,26 +184,27 @@ In the seconde case :
 ```php
 <?php
 
-$events = StaticEventManager::getInstance();
-$events->attach('bootstrap', MvcEvent::EVENT_BOOTSTRAP, array($this, 'initializeAcl'), 100);
-$events->attach('bootstrap', MvcEvent::EVENT_BOOTSTRAP, array($this, 'initializeView'), 100);
-$events->attach('Zend\Module\Manager', 'loadModules.post', array($this, 'initializeNavigation'), -100);
+$events = $manager->events()->getSharedManager();
+$events->attach('application', MvcEvent::EVENT_BOOTSTRAP, array($this, 'firstListener'), 100);
+$events->attach('application', MvcEvent::EVENT_BOOTSTRAP, array($this, 'secondListener'), 100);
+$events->attach('Zend\ModuleManager\ModuleManager', 'loadModules.post', array($this, 'thirdListener'), -100);
 ```
 
-=> ZFMLL performance increases **up to 65%**.
+=> ZFMLL performance increases **up to 55%**.
 
 In the third case :
 
 - 4 modules :Application, Administration, Cron and Blog
-- Administration attach the same listeners with the second case, and Blog attach one listener (listener function are empty) :
+- Administration attach the same listeners with the second case, and Blog attach two listeners (listener function are empty) :
 
 ```php
 <?php
 
-$events = StaticEventManager::getInstance();
-$events->attach('bootstrap', MvcEvent::EVENT_BOOTSTRAP, array($this, 'initializeView'), 100);
+$events = $manager->events()->getSharedManager();
+$events->attach('application', MvcEvent::EVENT_BOOTSTRAP, array($this, 'firstListener'), 100);
+$events->attach('application', MvcEvent::EVENT_BOOTSTRAP, array($this, 'secondListener'), 100);
 ```
 
-=> ZFMLL performance increases **up to 75%**.
+=> ZFMLL performance increases **up to 60%**.
 
-With a real code in the several listeners, ZFMLL can increase more of 100% performance !
+With a real code in the several listeners, ZFMLL can increase more of 75% performance !

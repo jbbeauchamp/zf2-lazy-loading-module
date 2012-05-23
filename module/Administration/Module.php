@@ -2,16 +2,10 @@
 
 namespace Administration;
 
-use Zend\Module\Manager,
-    Zend\EventManager\StaticEventManager,
-    Zend\Module\Consumer\AutoloaderProvider;
+use Zend\ModuleManager\Feature\AutoloaderProviderInterface;
 
-class Module implements AutoloaderProvider
+class Module implements AutoloaderProviderInterface
 {
-    public function init(Manager $moduleManager)
-    {
-    }
-
     public function getAutoloaderConfig()
     {
         return array(

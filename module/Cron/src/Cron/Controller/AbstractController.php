@@ -4,8 +4,8 @@ namespace Cron\Controller;
 
 use Zend\Mvc\Controller\ActionController,
     Zend\Mvc\MvcEvent,
-    Zend\Stdlib\RequestDescription as Request,
-    Zend\Stdlib\ResponseDescription as Response;
+    Zend\Stdlib\ResponseInterface as Response,
+    Zend\Stdlib\RequestInterface as Request;
 
 class AbstractController extends ActionController
 {

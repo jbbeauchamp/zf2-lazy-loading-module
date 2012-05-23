@@ -10,7 +10,7 @@ class IndexController extends ActionController
     public function indexAction()
     {
         return array(
-            'modules' => $this->getLocator()->get('ZFMLL\Module\Manager')->getModules()
+            'modules' => $this->getServiceLocator()->get('ModuleManager')->getModules()
         );
     }
 }

@@ -26,6 +26,13 @@
                 $contents = preg_replace("#\/\/#", "", $contents);
             ?>
             <pre style="margin-bottom: 18px;" class="prettyprint linenums"><ol class="linenums"><li><?php echo $contents; ?></li></ol></pre>
+            <p>And autoloader to load ZFMLL in your index with :</p>
+            <?php
+                $contents = file_get_contents(__DIR__.'/../../../../public/index.php');
+                $contents = htmlentities($contents);
+                $contents = preg_replace("#\\n#", "</li><li>", $contents);
+            ?>
+            <pre style="margin-bottom: 18px;" class="prettyprint linenums"><ol class="linenums"><li><?php echo $contents; ?></li></ol></pre>
             <p>Navigate with the menu and look which modules are loaded.</p>
         <h3>Filter available</h3>
         <ul>
