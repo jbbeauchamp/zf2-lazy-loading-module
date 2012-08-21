@@ -7,10 +7,10 @@
 
 namespace ZFMLL\ModuleManager\Listener\Environment;
 
-use ZFMLL\ModuleManager\Listener\AbstractListener,
-    ZFMLL\ModuleManager\Listener\EnvironmentHandler;
+use ZFMLL\ModuleManager\Listener\AbstractListener;
+use ZFMLL\ModuleManager\Listener\EnvironmentHandler;
 
-class SapiListener extends AbstractListener implements EnvironmentHandler
+class SapiListener extends AbstractListener
 {
     /**
      * 
@@ -20,26 +20,5 @@ class SapiListener extends AbstractListener implements EnvironmentHandler
     public function authorizeModule($moduleName)
     {
         return php_sapi_name() === $this->config;
-    }
-    
-    /**
-     *
-     * @param ModuleEvent $e
-     * @return string 
-     */
-    public function getArgument($param)
-    {
-    	if(strtolower(ini_get('register_argc_argv'))!='on' && ini_get('register_argc_argv')!='1') {
-            return null;
-    	}
-    	
-    	$argv = isset($_SERVER['argv']) ? $_SERVER['argv'] : array();
-    	foreach($argv as $arg) {
-            $match = array();
-            if(preg_match('#^--'.$param.'=(.*)$#', $arg, $match)) {
-                    return $match[1];
-            }
-    	}
-        return null;
     }
 }

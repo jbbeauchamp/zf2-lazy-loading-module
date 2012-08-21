@@ -7,10 +7,10 @@
 
 namespace ZFMLL\ModuleManager\Listener;
 
-use ZFMLL\ModuleManager\ModuleEvent,
-    Zend\ModuleManager\ModuleEvent as BaseModuleEvent;
+use ZFMLL\ModuleManager\ModuleEvent;
+use Zend\ModuleManager\ModuleEvent as BaseModuleEvent;
 
-abstract class AbstractListener implements AuthorizeHandler
+abstract class AbstractListener implements AuthorizeHandlerInterface
 {
     /**
      * Current config
@@ -42,15 +42,7 @@ abstract class AbstractListener implements AuthorizeHandler
      */
     public function authorizeModule($module)
     {
-        return false;
-    }
-    
-    /**
-     * Get environnement value
-     */
-    public function environment($param)
-    {
-        return null;
+        return true;
     }
     
     /**

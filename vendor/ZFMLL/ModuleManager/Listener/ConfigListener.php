@@ -7,8 +7,8 @@
 
 namespace ZFMLL\ModuleManager\Listener;
 
-use Zend\ModuleManager\Listener\ConfigListener as BaseConfigListener,
-    Zend\ModuleManager\ModuleEvent;
+use Zend\ModuleManager\Listener\ConfigListener as BaseConfigListener;
+use Zend\ModuleManager\ModuleEvent;
 
 class ConfigListener extends BaseConfigListener
 {

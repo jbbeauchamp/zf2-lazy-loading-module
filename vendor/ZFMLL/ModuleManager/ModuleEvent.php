@@ -7,31 +7,10 @@
 
 namespace ZFMLL\ModuleManager;
 
-use Zend\ModuleManager\ModuleEvent as BaseEvent;
+use Zend\ModuleManager\ModuleEvent as BaseModuleEvent;
 
-class ModuleEvent extends BaseEvent
+class ModuleEvent extends BaseModuleEvent
 {
-    /**
-     * argument to get
-     * @var string
-     */
-    protected $parameterArgument;
-
-    /**
-     * Get parameter listener
-     */
-    public function getParameterArgument()
-    {
-    	return $this->parameterArgument;
-    }
-    
-    /**
-     * Set argument environment listener
-     * @param string $parameterEnvironnement
-     */
-    public function setParameterArgument($parameterArgument)
-    {
-    	$this->parameterArgument = $parameterArgument;
-    	return $this;
-    }
+    CONST EVENT_LOAD_MODULE_AUTH = 'loadModuleAuth';
+    CONST EVENT_LOAD_MODULES_AUTH = 'loadModulesAuth';
 }

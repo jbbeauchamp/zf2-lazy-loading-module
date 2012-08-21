@@ -7,11 +7,11 @@
 
 namespace ZFMLL\ModuleManager\Listener\Environment;
 
-use ZFMLL\ModuleManager\Listener\AbstractListener,
-    ZFMLL\ModuleManager\Listener\EnvironmentHandler,
-    Zend\Console\Getopt;
+use ZFMLL\ModuleManager\Listener\AbstractListener;
+use ZFMLL\ModuleManager\Listener\EnvironmentHandler;
+use Zend\Console\Getopt;
 
-class GetoptListener extends AbstractListener implements EnvironmentHandler
+class GetoptListener extends AbstractListener
 {
     /**
      * @var Getopt 
@@ -42,7 +42,7 @@ class GetoptListener extends AbstractListener implements EnvironmentHandler
             }
         }
         
-        return count($this->getGetopt()->getOptions()) == $numOpt;
+        return count($this->getGetopt()->getOptions()) >= $numOpt; // let use of more argument
     }
     
     /**
@@ -52,23 +52,9 @@ class GetoptListener extends AbstractListener implements EnvironmentHandler
     public function getGetopt()
     {
         if(!$this->getopt) {
-            $this->getopt = @new Getopt($this->config);
+            $this->getopt = @new Getopt($this->config, null, array(Getopt::CONFIG_FREEFORM_FLAGS => true)); // let use of more argument
             $this->getopt->parse();
         }
         return $this->getopt;
-    }
-    
-    /**
-     *
-     * @param ModuleEvent $e
-     * @return string 
-     */
-    public function getArgument($param)
-    {
-    	if(strtolower(ini_get('register_argc_argv'))!='on' && ini_get('register_argc_argv')!='1') {
-            return null;
-    	}
-    	
-        return $this->getGetopt()->getOption($param);
     }
 }

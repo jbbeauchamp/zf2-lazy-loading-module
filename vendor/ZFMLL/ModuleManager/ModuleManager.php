@@ -20,10 +20,19 @@ class ModuleManager extends BaseModuleManager
      */
     public function loadModules()
     {
+        $this->getEventManager()->trigger(ModuleEvent::EVENT_LOAD_MODULES_AUTH, $this, $this->getEvent());
+        return parent::loadModules();
+    }
+
+    /**
+     * Listener auth modules
+     */
+    public function onLoadModulesAuth()
+    {
         if (true === $this->modulesAreLoaded) {
             return $this;
         }
-        
+
         $modules = array();
     	foreach ($this->getModules() as $moduleName) {
             $auth = $this->loadModuleAuth($moduleName);
@@ -32,8 +41,6 @@ class ModuleManager extends BaseModuleManager
             }
         }
         $this->setModules($modules);
-        
-        return parent::loadModules();
     }
 	
     /**
@@ -49,7 +56,7 @@ class ModuleManager extends BaseModuleManager
         $event = $this->getEvent();
         $event->setModuleName($moduleName);
         
-        $result = $this->events()->trigger(__FUNCTION__, $this, $event, function($r) {
+        $result = $this->getEventManager()->trigger(ModuleEvent::EVENT_LOAD_MODULE_AUTH, $this, $event, function($r) {
             return !$r;
         });
         
@@ -59,7 +66,19 @@ class ModuleManager extends BaseModuleManager
         
         return true;
     }
-    
+
+    /**
+     * Register the default event listeners
+     *
+     * @return ModuleManager
+     */
+    protected function attachDefaultListeners()
+    {
+        $events = $this->getEventManager();
+        $events->attach(ModuleEvent::EVENT_LOAD_MODULES_AUTH, array($this, 'onLoadModulesAuth'));
+        parent::attachDefaultListeners();
+    }
+
     /**
      * Get the module event
      *

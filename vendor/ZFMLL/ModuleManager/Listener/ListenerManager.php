@@ -7,144 +7,53 @@
 
 namespace ZFMLL\ModuleManager\Listener;
 
-use ZFMLL\ModuleManager\ModuleEvent,
-    Zend\ModuleManager\ModuleEvent as BaseModuleEvent;
+use Zend\ServiceManager\AbstractPluginManager;
+use ZFMLL\ModuleManager\Listener\Exception\InvalidListenerException;
 
-class ListenerManager
+class ListenerManager extends AbstractPluginManager
 {
-    /**
-     * Listener broker
-     * @var ListenerBroker
-     */
-    protected $listenerBroker;
-	
-	/**
-     * Lazy loading config
-     * @var Config\LazyLoading
-     */
-    protected $lazyLoading;
+    protected $invokableClasses = array(
+        'datetime'  => 'ZFMLL\ModuleManager\Listener\Server\DateTime',
+        'hostname'  => 'ZFMLL\ModuleManager\Listener\Server\DomainListener',
+       	'getopt' => 'ZFMLL\ModuleManager\Listener\Environment\GetoptListener',
+        'http_method' => 'ZFMLL\ModuleManager\Listener\Server\HttpMethod',
+    	'https' => 'ZFMLL\ModuleManager\Listener\Server\HttpsListener',
+        'port' => 'ZFMLL\ModuleManager\Listener\Server\PortListener',
+    	'remoteaddr' => 'ZFMLL\ModuleManager\Listener\Server\RemoteAddrListener',
+        'sapi' => 'ZFMLL\ModuleManager\Listener\Environment\SapiListener',
+        'url' => 'ZFMLL\ModuleManager\Listener\Server\UrlListener',
+        'user_agent' => 'ZFMLL\ModuleManager\Listener\Server\UserAgent',
+    );
 
-    /**
-     *
-     * @param array $lazyLoading 
-     */
-    public function __construct($lazyLoading = null)
-    {
-        if($lazyLoading) {
-            $this->setLazyLoading($lazyLoading);
-        }
-    }
-	
-    /**
-     * Authorize loading module listener
-     * @param ModuleEvent $e
-     * @return boolean 
-     */
-    public function authorize(BaseModuleEvent $e)
-    {   
-        $moduleName = $e->getModuleName();
-        $moduleName = strtolower($moduleName);
-        $listeners = $this->getLazyLoading()->getListenersModule($moduleName);
-        foreach($listeners as $listener => $value) {
-            $listenerObject = $this->load($listener);
-            $listenerObject->setConfig($value);
-            if(!$listenerObject->authorizeModule($moduleName)) {
-                return false;
-            }
-        }
-        return true;
-    }
-    
-    /**
-     * Get parameter environment
-     * @param ModuleEvent $e
-     */
-    public function argument(ModuleEvent $e)
-    {
-        $listeners = $this->getBroker()->getListeners();
-        foreach($listeners as $listener) {
-            if($listener instanceof EnvironmentHandler) {
-                $argument = $listener->getArgument($e->getParameterArgument());
-                if(null === $argument) {
-                    continue;
-                }
-                return $argument;
-            }
-        }
-    }
-    
-    /**
-     * 
-     * @param string $listenerName
-     */
-    public function load($listenerName, array $options = null)
-    {
-    	return $this->getBroker()->load($listenerName, $options);
-    }
-    
-	/**
-     * Set plugin broker instance
-     * 
-     * @param  string|ListenerBroker $broker 
-     * @return 
-     * @throws Exception\InvalidArgumentException
-     */
-    public function setBroker($broker)
-    {
-    	if (is_string($broker)) {
-            if (!class_exists($broker)) {
-                throw new Exception\InvalidArgumentException(sprintf(
-                    'Invalid helper broker class provided (%s)',
-                    $broker
-                ));
-            }
-            $broker = new $broker();
-        }
-        if (!$broker instanceof ListenerBroker) {
-            throw new Exception\InvalidArgumentException(sprintf(
-                'Listener broker must extend ZFMLL\ModuleManager\Listener\ListenerBroker; got type "%s" instead',
-                (is_object($broker) ? get_class($broker) : gettype($broker))
-            ));
-        }
-        $this->listenerBroker = $broker;
-    }
+    protected $aliases = array(
+        'php_sapi' => 'sapi',
+        'domain' => 'hostname',
+        'uri' => 'url',
+        'remote_addr' => 'remoteaddr',
+        'ip' => 'remoteaddr',
+        'http_user_agent' => 'user_agent',
+    );
 
+    public function get($name, $usePeeringServiceManagers = true)
+    {
+        $plugin = parent::get($name, $usePeeringServiceManagers);
+        return $plugin;
+    }
+    
     /**
-     * Get listeners broker instance
+     * Determine if we have a valid helper
      * 
-     * @return ListenerBroker
+     * @param  mixed $plugin 
+     * @return true
+     * @throws Exception\InvalidListenerException
      */
-    public function getBroker()
+    public function validatePlugin($plugin)
     {
-        if (null === $this->listenerBroker) {
-            $this->setBroker(new ListenerBroker());
+    	if ($plugin instanceof AuthorizeHandlerInterface) {
+            return;
         }
-        return $this->listenerBroker;
-    }
-    
-    /**
-     * Get lazy loading config
-     * @return Config\LazyLoading 
-     */
-    public function getLazyLoading()
-    {
-        if(null === $this->lazyLoading) {
-            $this->setLazyLoading(array());
-        }
-    	return $this->lazyLoading;
-    }
-    
-    /**
-     * Set lazy loading config
-     * @param LazyLoading $lazyLoading 
-     */
-    public function setLazyLoading($lazyLoading)
-    {
-    	if(!$lazyLoading instanceof Config\LazyLoading) {
-            $this->lazyLoading = new Config\LazyLoading($lazyLoading);
-    	}
-    	else {
-            $this->lazyLoading = $lazyLoading;
-    	}
+    	throw new InvalidListenerException(
+            'Auth listeners must implement AuthorizeHandlerInterface'
+        );
     }
 }
