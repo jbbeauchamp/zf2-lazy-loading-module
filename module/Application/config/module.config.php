@@ -3,7 +3,7 @@ return array(
     'router' => array(
         'routes' => array(
             'home' => array(
-                'type' => 'Zend\Mvc\Router\Http\Literal',
+                'type' => 'Literal',
                 'options' => array(
                     'route' => '/',
                     'defaults' => array(
@@ -13,7 +13,7 @@ return array(
                 ),
             ),
             'app' => array(
-                'type' => 'Zend\Mvc\Router\Http\Literal',
+                'type' => 'Literal',
                 'options' => array(
                     'route' => '/application',
                     'defaults' => array(
@@ -23,7 +23,7 @@ return array(
                 ),
             ),
             'admin-load' => array(
-                'type' => 'Zend\Mvc\Router\Http\Literal',
+                'type' => 'Literal',
                 'options' => array(
                     'route' => '/admin',
                     'defaults' => array(
@@ -33,7 +33,7 @@ return array(
                 ),
             ),
             'cron-load' => array(
-                'type' => 'Zend\Mvc\Router\Http\Literal',
+                'type' => 'Literal',
                 'options' => array(
                     'route' => '/cron',
                     'defaults' => array(
@@ -43,7 +43,7 @@ return array(
                 ),
             ),
             'cron-home' => array(
-                'type' => 'Zend\Mvc\Router\Http\Literal',
+                'type' => 'Literal',
                 'options' => array(
                     'route' => '/cron-cli',
                     'defaults' => array(
@@ -53,7 +53,7 @@ return array(
                 ),
             ),
             'admin-home' => array(
-                'type' => 'Zend\Mvc\Router\Http\Literal',
+                'type' => 'Literal',
                 'options' => array(
                     'route' => '/admin-443',
                     'defaults' => array(
@@ -63,7 +63,7 @@ return array(
                 ),
             ),
             'blog-home' => array(
-                'type' => 'Zend\Mvc\Router\Http\Literal',
+                'type' => 'Literal',
                 'options' => array(
                     'route' => '/blog/my-article',
                     'defaults' => array(
@@ -74,8 +74,8 @@ return array(
             ),
         ),
     ),
-    'controller' => array(
-        'classes' => array(
+    'controllers' => array(
+        'invokables' => array(
             'index' => 'Application\Controller\IndexController',
             'app' => 'Application\Controller\AppController',
             'blog' => 'Blog\Controller\BlogController',

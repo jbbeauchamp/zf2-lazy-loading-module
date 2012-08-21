@@ -2,10 +2,10 @@
 
 namespace Application\Controller;
 
-use Zend\View\Model\ViewModel,
-	Zend\Mvc\Controller\ActionController;
+use Zend\View\Model\ViewModel;
+use Zend\Mvc\Controller\AbstractActionController;
 
-class AppController extends ActionController
+class AppController extends AbstractActionController
 {
     public function appAction()
     {

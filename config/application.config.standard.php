@@ -19,9 +19,4 @@ return array(
             'Blog' => './module/Blog',
         ),
     ),
-    'service_manager' => array(
-        'use_defaults' => true,
-        'factories'    => array(
-        ),
-    ),
 );

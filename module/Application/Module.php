@@ -3,9 +3,22 @@
 namespace Application;
 
 use Zend\ModuleManager\Feature\AutoloaderProviderInterface;
+use Zend\ModuleManager\ModuleManager;
+use Zend\Mvc\MvcEvent;
 
 class Module implements AutoloaderProviderInterface
 {
+    public function init(ModuleManager $moduleManager)
+    {
+	$events = $moduleManager->getEventManager()->getSharedManager();
+	$events->attach('application', MvcEvent::EVENT_ROUTE, array($this, 'initializeSomething'),-100);
+    }
+    
+    public function initializeSomething(MvcEvent $e)
+    {
+        
+    }
+    
     public function getAutoloaderConfig()
     {
         return array(

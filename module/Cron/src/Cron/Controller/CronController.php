@@ -2,10 +2,9 @@
 
 namespace Cron\Controller;
 
-use Zend\View\Model\ViewModel,
-	Zend\Mvc\Controller\ActionController;
+use Zend\Mvc\Controller\AbstractActionController;
 
-class CronController extends AbstractController
+class CronController extends AbstractActionController
 {
     public function cronAction()
     {

@@ -20,7 +20,6 @@ return array(
         ),
         'lazy_loading' => array(
             'Cron' => array(
-             'getopt' => array('cron=s' => 'cron url'),
              'sapi' => 'cli',
             ),
             'Administration' => array(
@@ -34,12 +33,8 @@ return array(
         ),
     ),
     'service_manager' => array(
-        'use_defaults' => true,
         'factories'    => array(
             'ModuleManager' => 'ZFMLL\Mvc\Service\ModuleManagerFactory',
-        ),
-        'services' => array(
-            'RouteListener' => 'ZFMLL\Mvc\RouteListener',
         ),
     ),
 );

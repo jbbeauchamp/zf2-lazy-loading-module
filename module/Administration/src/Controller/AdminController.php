@@ -2,10 +2,10 @@
 
 namespace Administration\Controller;
 
-use Zend\View\Model\ViewModel,
-	Zend\Mvc\Controller\ActionController;
+use Zend\View\Model\ViewModel;
+use Zend\Mvc\Controller\AbstractActionController;
 
-class AdminController extends ActionController
+class AdminController extends AbstractActionController
 {
     public function adminAction()
     {

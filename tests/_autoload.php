@@ -16,7 +16,7 @@ function ZendTest_Autoloader($class)
 
     switch ($ns) {
         case 'Zend':
-            $file = dirname(__DIR__) . '/vendor/ZendFramework/library/Zend/';
+            $file = dirname(__DIR__) . '/vendor/ZF2/library/Zend/';
             break;
         case 'ZFMLL':
             $file = dirname(__DIR__) . '/vendor/ZFMLL/';
@@ -47,7 +47,7 @@ function ZendTest_Autoloader($class)
 
     switch ($ns) {
         case 'Zend':
-            $file = dirname(__DIR__) . '/vendor/ZendFramework/library/Zend/';
+            $file = dirname(__DIR__) . '/vendor/ZF2/library/Zend/';
             break;
         case 'ZFMLL':
             $file = dirname(__DIR__) . '/vendor/ZFMLL/';

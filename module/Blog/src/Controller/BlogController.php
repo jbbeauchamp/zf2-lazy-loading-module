@@ -2,10 +2,10 @@
 
 namespace Blog\Controller;
 
-use Zend\View\Model\ViewModel,
-	Zend\Mvc\Controller\ActionController;
+use Zend\View\Model\ViewModel;
+use Zend\Mvc\Controller\AbstractActionController;
 
-class BlogController extends ActionController
+class BlogController extends AbstractActionController
 {
     public function blogAction()
     {

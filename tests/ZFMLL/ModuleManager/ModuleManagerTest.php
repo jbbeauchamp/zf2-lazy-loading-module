@@ -2,17 +2,25 @@
 
 namespace ZFMLLTest\ModuleManager;
 
-use PHPUnit_Framework_TestCase as TestCase,
-    Zend\Loader\ModuleAutoloader,
-    Zend\Loader\AutoloaderFactory,
-    ZFMLL\ModuleManager\ModuleManager,
-    ZFMLL\ModuleManager\Listener\ListenerOptions,
-    Zend\EventManager\EventManager,
-    ZFMLL\ModuleManager\Listener\EnvironmentListenerAggregate,
-    InvalidArgumentException;
+use PHPUnit_Framework_TestCase as TestCase;
+use ZFMLL\ModuleManager\ModuleManager;
+use ZFMLL\ModuleManager\Listener\ListenerOptions;
+use ZFMLL\ModuleManager\Listener\AuthListenerAggregate;
+use Zend\EventManager\EventManager;
+use Zend\EventManager\SharedEventManager;
+use Zend\Loader\ModuleAutoloader;
+use Zend\Loader\AutoloaderFactory;
+use InvalidArgumentException;
 
 class ModuleManagerTest extends TestCase
 {
+    protected $tmpdir;
+    protected $configCache;
+    protected $loaders;
+    protected $includePath;
+    protected $defaultListeners;
+    protected $eventManager;
+
     public function setUp()
     {
         $this->tmpdir = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'zend_module_cache_dir';
@@ -29,13 +37,15 @@ class ModuleManagerTest extends TestCase
         // Store original include_path
         $this->includePath = get_include_path();
 
-        $this->defaultListeners = new EnvironmentListenerAggregate(
+        $this->defaultListeners = new AuthListenerAggregate(
             new ListenerOptions(array( 
                 'module_paths'         => array(
                     realpath(__DIR__ . '/TestAsset'),
                 ),
             ))
         );
+        $this->eventManager = new EventManager;
+        $this->eventManager->setSharedManager(new SharedEventManager);
     }
 
     public function tearDown()
@@ -63,8 +73,8 @@ class ModuleManagerTest extends TestCase
     public function testCanLoadSomeModule()
     {
         $configListener = $this->defaultListeners->getConfigListener();
-        $moduleManager  = new ModuleManager(array('SomeModule'), new EventManager);
-        $moduleManager->events()->attachAggregate($this->defaultListeners);
+        $moduleManager  = new ModuleManager(array('SomeModule'), $this->eventManager);
+        $moduleManager->getEventManager()->attachAggregate($this->defaultListeners);
         $moduleManager->loadModules();
         $loadedModules = $moduleManager->getLoadedModules();
         $this->assertEquals('SomeModule\Module', get_class($loadedModules['SomeModule']));
@@ -76,8 +86,8 @@ class ModuleManagerTest extends TestCase
     {
         $this->defaultListeners->getOptions()->setLazyLoading(array('SomeModule'=>array('sapi'=>php_sapi_name())));
         $configListener = $this->defaultListeners->getConfigListener();
-        $moduleManager  = new ModuleManager(array('SomeModule'), new EventManager);
-        $moduleManager->events()->attachAggregate($this->defaultListeners);
+        $moduleManager  = new ModuleManager(array('SomeModule'), $this->eventManager);
+        $moduleManager->getEventManager()->attachAggregate($this->defaultListeners);
         $moduleManager->loadModules();
         $loadedModules = $moduleManager->getLoadedModules();
         $this->assertEquals('SomeModule\Module', get_class($loadedModules['SomeModule']));
@@ -89,8 +99,8 @@ class ModuleManagerTest extends TestCase
     {
         $this->defaultListeners->getOptions()->setLazyLoading(array('SomeModule'=>array('sapi'=>'fail')));
         $configListener = $this->defaultListeners->getConfigListener();
-        $moduleManager  = new ModuleManager(array('SomeModule'), new EventManager);
-        $moduleManager->events()->attachAggregate($this->defaultListeners);
+        $moduleManager  = new ModuleManager(array('SomeModule'), $this->eventManager);
+        $moduleManager->getEventManager()->attachAggregate($this->defaultListeners);
         $moduleManager->loadModules();
         $loadedModules = $moduleManager->getLoadedModules();
         $this->assertEquals(0, count($loadedModules));
@@ -100,7 +110,7 @@ class ModuleManagerTest extends TestCase
     {
         $configListener = $this->defaultListeners->getConfigListener();
         $moduleManager  = new ModuleManager(array('BarModule', 'BazModule'));
-        $moduleManager->events()->attachAggregate($this->defaultListeners);
+        $moduleManager->getEventManager()->attachAggregate($this->defaultListeners);
         $moduleManager->loadModules();
         $loadedModules = $moduleManager->getLoadedModules();
         $this->assertEquals('BarModule\Module', get_class($loadedModules['BarModule']));
@@ -119,7 +129,7 @@ class ModuleManagerTest extends TestCase
         $this->defaultListeners->getOptions()->setLazyLoading(array('BazModule'=>array('sapi' => php_sapi_name())));
         $configListener = $this->defaultListeners->getConfigListener();
         $moduleManager  = new ModuleManager(array('BarModule', 'BazModule'));
-        $moduleManager->events()->attachAggregate($this->defaultListeners);
+        $moduleManager->getEventManager()->attachAggregate($this->defaultListeners);
         $moduleManager->loadModules();
         $loadedModules = $moduleManager->getLoadedModules();
         $this->assertEquals('BarModule\Module', get_class($loadedModules['BarModule']));
@@ -139,7 +149,7 @@ class ModuleManagerTest extends TestCase
         $this->defaultListeners->getOptions()->setLazyLoading(array('BazModule'=>array('sapi' => 'fail')));
         $configListener = $this->defaultListeners->getConfigListener();
         $moduleManager  = new ModuleManager(array('BarModule', 'BazModule'));
-        $moduleManager->events()->attachAggregate($this->defaultListeners);
+        $moduleManager->getEventManager()->attachAggregate($this->defaultListeners);
         $moduleManager->loadModules();
         $loadedModules = $moduleManager->getLoadedModules();
         $this->assertEquals(1, count($loadedModules));
@@ -160,7 +170,7 @@ class ModuleManagerTest extends TestCase
         ));
         $configListener = $this->defaultListeners->getConfigListener();
         $moduleManager  = new ModuleManager(array('BarModule', 'BazModule', 'SomeModule'));
-        $moduleManager->events()->attachAggregate($this->defaultListeners);
+        $moduleManager->getEventManager()->attachAggregate($this->defaultListeners);
         $moduleManager->loadModules();
         $loadedModules = $moduleManager->getLoadedModules();
         $this->assertEquals(3, count($loadedModules));
@@ -180,7 +190,7 @@ class ModuleManagerTest extends TestCase
         ));
         $configListener = $this->defaultListeners->getConfigListener();
         $moduleManager  = new ModuleManager(array('BarModule', 'BazModule', 'SomeModule'));
-        $moduleManager->events()->attachAggregate($this->defaultListeners);
+        $moduleManager->getEventManager()->attachAggregate($this->defaultListeners);
         $moduleManager->loadModules();
         $loadedModules = $moduleManager->getLoadedModules();
         $this->assertEquals(0, count($loadedModules));
@@ -190,57 +200,13 @@ class ModuleManagerTest extends TestCase
     {   
         $_SERVER['argv'][] = '--cron=url';
         $this->defaultListeners->getOptions()->setLazyLoading(array(
-            'SomeModule' => array('getopt' => array('cron=s' => 'cron url'),),
+            'SomeModule' => array('getopt' => array('cron=s' => 'cron url')),
         ));
         $configListener = $this->defaultListeners->getConfigListener();
         $moduleManager  = new ModuleManager(array('SomeModule'));
-        $moduleManager->events()->attachAggregate($this->defaultListeners);
+        $moduleManager->getEventManager()->attachAggregate($this->defaultListeners);
         $moduleManager->loadModules();
         $loadedModules = $moduleManager->getLoadedModules();
         $this->assertEquals(1, count($loadedModules));
-        $event = $moduleManager->getEvent();
-        $event->setName('loadModuleAuth.argument');
-        $event->setParameterArgument('cron');
-        $results = $moduleManager->events()->trigger($event);
-        $this->assertEquals($results->last(), "url");
-    }
-    
-    public function testCanLoadMultipleModulesWithArgumentSapi()
-    {   
-        $_SERVER['argv'][] = '--cron="url"';
-        $this->defaultListeners->getOptions()->setLazyLoading(array(
-            'SomeModule' => array('sapi' => 'cli'),
-        ));
-        $configListener = $this->defaultListeners->getConfigListener();
-        $moduleManager  = new ModuleManager(array('SomeModule'));
-        $moduleManager->events()->attachAggregate($this->defaultListeners);
-        $moduleManager->loadModules();
-        $loadedModules = $moduleManager->getLoadedModules();
-        $this->assertEquals(1, count($loadedModules));
-        $event = $moduleManager->getEvent();
-        $event->setName('loadModuleAuth.argument');
-        $event->setParameterArgument('cron');
-        $results = $moduleManager->events()->trigger($event);
-        $this->assertEquals($results->last(), '"url"');
-    }
-    
-    public function testCanLoadMultipleModulesWithArgumentFail()
-    {   
-        $_SERVER['HTTP_HOST'] = 'zend-framework-2.fr';
-        $_SERVER['argv'][] = '--cron="url"';
-        $this->defaultListeners->getOptions()->setLazyLoading(array(
-            'SomeModule' => array('domain' => 'zend-framework-2.fr'),
-        ));
-        $configListener = $this->defaultListeners->getConfigListener();
-        $moduleManager  = new ModuleManager(array('SomeModule'));
-        $moduleManager->events()->attachAggregate($this->defaultListeners);
-        $moduleManager->loadModules();
-        $loadedModules = $moduleManager->getLoadedModules();
-        $this->assertEquals(1, count($loadedModules));
-        $event = $moduleManager->getEvent();
-        $event->setName('loadModuleAuth.argument');
-        $event->setParameterArgument('cron');
-        $results = $moduleManager->events()->trigger($event);
-        $this->assertEquals($results->last(), null);
     }
 }

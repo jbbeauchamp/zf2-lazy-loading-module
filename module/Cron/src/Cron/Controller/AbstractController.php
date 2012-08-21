@@ -2,12 +2,12 @@
 
 namespace Cron\Controller;
 
-use Zend\Mvc\Controller\ActionController,
-    Zend\Mvc\MvcEvent,
-    Zend\Stdlib\ResponseInterface as Response,
-    Zend\Stdlib\RequestInterface as Request;
+use Zend\Mvc\Controller\AbstractActionController;
+use Zend\Mvc\MvcEvent;
+use Zend\Stdlib\ResponseInterface as Response;
+use Zend\Stdlib\RequestInterface as Request;
 
-class AbstractController extends ActionController
+class AbstractController extends AbstractActionController
 {
     /**
      * Dispatch short circuit
