@@ -164,7 +164,7 @@ class ModuleManagerTest extends TestCase
         $_SERVER['REQUEST_URI'] = '/blog/my-article';
         $_SERVER['HTTP_HOST'] = 'lazy-loading.zend-framework-2.fr';
         $this->defaultListeners->getOptions()->setLazyLoading(array(
-            'SomeModule' => array('domain' => 'lazy-loading.zend-framework-2.fr'),
+            'SomeModule' => array('domain' => array('lazy-loading.zend-framework-2.fr', 'lazy-loading.zend-framework-2.com')),
             'BarModule' => array('sapi' => php_sapi_name(), 'port' => 443, 'https' => 'on'),
             'BazModule' => array('remote_addr' => array('12.14.16.15'), 'url' => array('regex' => '/blog/.*')),
         ));

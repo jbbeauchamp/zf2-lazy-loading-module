@@ -1,19 +1,29 @@
 {
-    "name": "zendframework/skeleton-application",
-    "description": "Skeleton Application for ZF2",
-    "license": "BSD-3-Clause",
-    "keywords": [
-        "framework",
-        "zf2"
+    "name": "blanchonvincent/zf2-lazy-loading-module",
+    "description": "ZF2 Lazy Loading Module 1.5 - Provide a library to implements lazy loading module in ZF2",
+    "version": "1.5.0",
+    "type": "library",
+    "license": "MIT",
+    "tags": [
+        "zend framework",
+        "lazy loading",
+        "module"
     ],
-    "homepage": "http://framework.zend.com/",
+    "homepage": "https://github.com/blanchonvincent/zf2-lazy-loading-module",
+    "authors": [
+        {
+            "name": "Vincent Blanchon",
+            "email": "blanchon.vincent@gmail.com",
+            "homepage": "http://developpeur-zend-framework.fr"
+        }
+    ],
     "require": {
         "php": ">=5.3.3",
-        "zendframework/zendframework": "dev-master#96750fd8e6e85ead7ca42e5cb6b890816e67cbcc"
+        "zendframework/zendframework": "2.*"
     },
     "autoload": {
-        "psr-0": {
-            "Application": "module/Application/src"
-        }
+    	"psr-0": {
+            "ZFMLL": "ZFMLL/"
+    	}
     }
 }
