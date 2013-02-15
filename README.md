@@ -9,6 +9,85 @@ Introduction
 For this project, i redefined a party of the module manager to have a lazy loading and increase the performance.
 Project exemple is available on [the loazy loading module website](http://lazy-loading.zend-framework-2.fr/)
 
+Installation
+------------
+
+1) Modify your ./init_autoloader.php :
+```php
+<?php
+
+require_once __DIR__ . '/vendor/ZF2/library/Zend/Loader/AutoloaderFactory.php';
+Zend\Loader\AutoloaderFactory::factory(array(
+    'Zend\Loader\StandardAutoloader' => array(
+        'autoregister_zf' => true,
+    ),
+    'Zend\Loader\ClassMapAutoloader' => array(
+        __DIR__ . '/config/autoload_classmap.php'
+    ),
+));
+```
+
+2) Create a file ./config/autoload_classmap.php :
+```php
+<?php
+return array(
+    'ZFMLL\Mvc\Service\ModuleManagerFactory' => __DIR__ . '/../vendor/ZFMLL/Mvc/Service/ModuleManagerFactory.php',
+    'ZFMLL\ModuleManager\ModuleManager' => __DIR__ . '/../vendor/ZFMLL/ModuleManager/ModuleManager.php',
+    'ZFMLL\ModuleManager\Exception' => __DIR__ . '/../vendor/ZFMLL/ModuleManager/Exception.php',
+    'ZFMLL\ModuleManager\ModuleEvent' => __DIR__ . '/../vendor/ZFMLL/ModuleManager/ModuleEvent.php',
+    'ZFMLL\ModuleManager\Listener\Exception\InvalidListenerException' => __DIR__ . '/../vendor/ZFMLL/ModuleManager/Listener/Exception/InvalidListenerException.php',
+    'ZFMLL\ModuleManager\Listener\Exception\InvalidArgumentException' => __DIR__ . '/../vendor/ZFMLL/ModuleManager/Listener/Exception/InvalidArgumentException.php',
+    'ZFMLL\ModuleManager\Listener\Config\LazyLoading' => __DIR__ . '/../vendor/ZFMLL/ModuleManager/Listener/Config/LazyLoading.php',
+    'ZFMLL\ModuleManager\Listener\ConfigListener' => __DIR__ . '/../vendor/ZFMLL/ModuleManager/Listener/ConfigListener.php',
+    'ZFMLL\ModuleManager\Listener\AuthManager' => __DIR__ . '/../vendor/ZFMLL/ModuleManager/Listener/AuthManager.php',
+    'ZFMLL\ModuleManager\Listener\ListenerManager' => __DIR__ . '/../vendor/ZFMLL/ModuleManager/Listener/ListenerManager.php',
+    'ZFMLL\ModuleManager\Listener\ListenerOptions' => __DIR__ . '/../vendor/ZFMLL/ModuleManager/Listener/ListenerOptions.php',
+    'ZFMLL\ModuleManager\Listener\AuthorizeHandlerInterface' => __DIR__ . '/../vendor/ZFMLL/ModuleManager/Listener/AuthorizeHandlerInterface.php',
+    'ZFMLL\ModuleManager\Listener\AbstractListener' => __DIR__ . '/../vendor/ZFMLL/ModuleManager/Listener/AbstractListener.php',
+    'ZFMLL\ModuleManager\Listener\AuthListenerAggregate' => __DIR__ . '/../vendor/ZFMLL/ModuleManager/Listener/AuthListenerAggregate.php',
+    'ZFMLL\ModuleManager\Listener\Environment\GetoptListener' => __DIR__ . '/../vendor/ZFMLL/ModuleManager/Listener/Environment/GetoptListener.php',
+    'ZFMLL\ModuleManager\Listener\Environment\SapiListener' => __DIR__ . '/../vendor/ZFMLL/ModuleManager/Listener/Environment/SapiListener.php',
+    'ZFMLL\ModuleManager\Listener\Server\HttpsListener' => __DIR__ . '/../vendor/ZFMLL/ModuleManager/Listener/Server/HttpsListener.php',
+    'ZFMLL\ModuleManager\Listener\Server\RemoteAddrListener' => __DIR__ . '/../vendor/ZFMLL/ModuleManager/Listener/Server/RemoteAddrListener.php',
+    'ZFMLL\ModuleManager\Listener\Server\PortListener' => __DIR__ . '/../vendor/ZFMLL/ModuleManager/Listener/Server/PortListener.php',
+    'ZFMLL\ModuleManager\Listener\Server\DomainListener' => __DIR__ . '/../vendor/ZFMLL/ModuleManager/Listener/Server/DomainListener.php',
+    'ZFMLL\ModuleManager\Listener\Server\UrlListener' => __DIR__ . '/../vendor/ZFMLL/ModuleManager/Listener/Server/UrlListener.php',
+    'ZFMLL\ModuleManager\Listener\Server\DateTime' => __DIR__ . '/../vendor/ZFMLL/ModuleManager/Listener/Server/DateTime.php',
+    'ZFMLL\ModuleManager\Listener\Server\HttpMethod' => __DIR__ . '/../vendor/ZFMLL/ModuleManager/Listener/Server/HttpMethod.php',
+    'ZFMLL\ModuleManager\Listener\Server\UserAgent' => __DIR__ . '/../vendor/ZFMLL/ModuleManager/Listener/Server/UserAgent.php',
+);
+```
+
+3) Modify your ./config/application.config.php :
+```php
+<?php
+return array(
+    'modules' => array(
+        'Application',
+    	'Test',
+    ),
+    'module_listener_options' => array(
+        'module_paths' => array(
+            './module',
+            './vendor',
+        ),
+        'config_glob_paths' => array(
+            'config/autoload/{,*.}{global,local}.php',
+        ),
+		'lazy_loading' => array(
+            'Test' => array(
+                'url' => array('regex' => '/test/.*' ),
+            ),
+        ),
+    ),
+	'service_manager' => array(
+        'factories'    => array(
+            'ModuleManager' => 'ZFMLL\Mvc\Service\ModuleManagerFactory',
+        ),
+    ),
+);
+```
+
 Lazy Loading module usage
 ------------
 
@@ -107,33 +186,6 @@ return array(
 Filter available are : argument in command line, sapi, domain, https protocol, server port, url and remote address.
 
 The cache key will be automatically update with the module loaded.
-Just update index with ZFMLL library to use lazy loading :
-
-```php
-<?php
-
-use Zend\Loader\AutoloaderFactory,
-    Zend\ServiceManager\ServiceManager,
-    Zend\Mvc\Service\ServiceManagerConfiguration;
-
-chdir(dirname(__DIR__));
-require_once (getenv('ZF2_PATH') ?: 'vendor/ZendFramework/library') . '/Zend/Loader/AutoloaderFactory.php';
-
-// Setup autoloader
-AutoloaderFactory::factory();
-AutoloaderFactory::factory(array('Zend\Loader\ClassMapAutoloader' => array(include 'config/autoload_classmap.php')));
-
-// Get application stack configuration
-$configuration = include 'config/application.config.php';
-
-// Setup service manager
-$serviceManager = new ServiceManager(new ServiceManagerConfiguration($configuration['service_manager']));
-$serviceManager->setService('ApplicationConfiguration', $configuration);
-$serviceManager->get('ModuleManager')->loadModules();
-
-// Run application
-$serviceManager->get('Application')->bootstrap()->run()->send();
-```
 
 Benchmark
 ------------
