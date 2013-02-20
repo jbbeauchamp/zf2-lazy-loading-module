@@ -17,6 +17,12 @@ Installation
 <?php
 
 require_once __DIR__ . '/vendor/ZF2/library/Zend/Loader/AutoloaderFactory.php';
+
+// Composer autoloading
+if (file_exists('vendor/autoload.php')) {
+    $loader = include 'vendor/autoload.php';
+}
+
 Zend\Loader\AutoloaderFactory::factory(array(
     'Zend\Loader\StandardAutoloader' => array(
         'autoregister_zf' => true,
