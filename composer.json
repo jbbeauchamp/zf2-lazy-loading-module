@@ -1,7 +1,7 @@
 {
     "name": "blanchonvincent/zf2-lazy-loading-module",
-    "description": "ZF2 Lazy Loading Module 1.5 - Provide a library to implements lazy loading module in ZF2",
-    "version": "1.5.0",
+    "description": "ZF2 Lazy Loading Module 1.5.1 - Provide a library to implements lazy loading module in ZF2",
+    "version": "1.5.1",
     "type": "library",
     "license": "MIT",
     "tags": [

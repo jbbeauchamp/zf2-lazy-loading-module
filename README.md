@@ -1,7 +1,7 @@
 ZF2 Lazy loading module
 ==============
 
-Version 1.5 Created by [Vincent Blanchon](http://developpeur-zend-framework.fr/)
+Version 1.5.1 Created by [Vincent Blanchon](http://developpeur-zend-framework.fr/)
 
 Introduction
 ------------
@@ -12,7 +12,23 @@ Project exemple is available on [the loazy loading module website](http://lazy-l
 Installation
 ------------
 
-1) Modify your ./init_autoloader.php :
+1) Install with composer :
+
+Add the dependency in composer.json :
+
+```json
+{
+    "require" : {
+        "blanchonvincent/zf2-lazy-loading-module" : "master-dev"
+    }
+}
+```
+
+```php
+php composer.phar update
+```
+
+2) Modify your ./init_autoloader.php :
 ```php
 <?php
 
@@ -26,42 +42,12 @@ if (file_exists('vendor/autoload.php')) {
 Zend\Loader\AutoloaderFactory::factory(array(
     'Zend\Loader\StandardAutoloader' => array(
         'autoregister_zf' => true,
-    ),
-    'Zend\Loader\ClassMapAutoloader' => array(
-        __DIR__ . '/config/autoload_classmap.php'
+        'namespaces' => array(
+            'ZFMLL' => __DIR__ . '/vendor/blanchonvincent/zf2-lazy-loading-module',
+        ),
     ),
 ));
 ```
-
-2) Create a file ./config/autoload_classmap.php :
-```php
-<?php
-return array(
-    'ZFMLL\Mvc\Service\ModuleManagerFactory' => __DIR__ . '/../vendor/ZFMLL/Mvc/Service/ModuleManagerFactory.php',
-    'ZFMLL\ModuleManager\ModuleManager' => __DIR__ . '/../vendor/ZFMLL/ModuleManager/ModuleManager.php',
-    'ZFMLL\ModuleManager\Exception' => __DIR__ . '/../vendor/ZFMLL/ModuleManager/Exception.php',
-    'ZFMLL\ModuleManager\ModuleEvent' => __DIR__ . '/../vendor/ZFMLL/ModuleManager/ModuleEvent.php',
-    'ZFMLL\ModuleManager\Listener\Exception\InvalidListenerException' => __DIR__ . '/../vendor/ZFMLL/ModuleManager/Listener/Exception/InvalidListenerException.php',
-    'ZFMLL\ModuleManager\Listener\Exception\InvalidArgumentException' => __DIR__ . '/../vendor/ZFMLL/ModuleManager/Listener/Exception/InvalidArgumentException.php',
-    'ZFMLL\ModuleManager\Listener\Config\LazyLoading' => __DIR__ . '/../vendor/ZFMLL/ModuleManager/Listener/Config/LazyLoading.php',
-    'ZFMLL\ModuleManager\Listener\ConfigListener' => __DIR__ . '/../vendor/ZFMLL/ModuleManager/Listener/ConfigListener.php',
-    'ZFMLL\ModuleManager\Listener\AuthManager' => __DIR__ . '/../vendor/ZFMLL/ModuleManager/Listener/AuthManager.php',
-    'ZFMLL\ModuleManager\Listener\ListenerManager' => __DIR__ . '/../vendor/ZFMLL/ModuleManager/Listener/ListenerManager.php',
-    'ZFMLL\ModuleManager\Listener\ListenerOptions' => __DIR__ . '/../vendor/ZFMLL/ModuleManager/Listener/ListenerOptions.php',
-    'ZFMLL\ModuleManager\Listener\AuthorizeHandlerInterface' => __DIR__ . '/../vendor/ZFMLL/ModuleManager/Listener/AuthorizeHandlerInterface.php',
-    'ZFMLL\ModuleManager\Listener\AbstractListener' => __DIR__ . '/../vendor/ZFMLL/ModuleManager/Listener/AbstractListener.php',
-    'ZFMLL\ModuleManager\Listener\AuthListenerAggregate' => __DIR__ . '/../vendor/ZFMLL/ModuleManager/Listener/AuthListenerAggregate.php',
-    'ZFMLL\ModuleManager\Listener\Environment\GetoptListener' => __DIR__ . '/../vendor/ZFMLL/ModuleManager/Listener/Environment/GetoptListener.php',
-    'ZFMLL\ModuleManager\Listener\Environment\SapiListener' => __DIR__ . '/../vendor/ZFMLL/ModuleManager/Listener/Environment/SapiListener.php',
-    'ZFMLL\ModuleManager\Listener\Server\HttpsListener' => __DIR__ . '/../vendor/ZFMLL/ModuleManager/Listener/Server/HttpsListener.php',
-    'ZFMLL\ModuleManager\Listener\Server\RemoteAddrListener' => __DIR__ . '/../vendor/ZFMLL/ModuleManager/Listener/Server/RemoteAddrListener.php',
-    'ZFMLL\ModuleManager\Listener\Server\PortListener' => __DIR__ . '/../vendor/ZFMLL/ModuleManager/Listener/Server/PortListener.php',
-    'ZFMLL\ModuleManager\Listener\Server\DomainListener' => __DIR__ . '/../vendor/ZFMLL/ModuleManager/Listener/Server/DomainListener.php',
-    'ZFMLL\ModuleManager\Listener\Server\UrlListener' => __DIR__ . '/../vendor/ZFMLL/ModuleManager/Listener/Server/UrlListener.php',
-    'ZFMLL\ModuleManager\Listener\Server\DateTime' => __DIR__ . '/../vendor/ZFMLL/ModuleManager/Listener/Server/DateTime.php',
-    'ZFMLL\ModuleManager\Listener\Server\HttpMethod' => __DIR__ . '/../vendor/ZFMLL/ModuleManager/Listener/Server/HttpMethod.php',
-    'ZFMLL\ModuleManager\Listener\Server\UserAgent' => __DIR__ . '/../vendor/ZFMLL/ModuleManager/Listener/Server/UserAgent.php',
-);
 ```
 
 3) Modify your ./config/application.config.php :
@@ -69,8 +55,7 @@ return array(
 <?php
 return array(
     'modules' => array(
-        'Application',
-    	'Test',
+        // your modules
     ),
     'module_listener_options' => array(
         'module_paths' => array(
@@ -80,13 +65,11 @@ return array(
         'config_glob_paths' => array(
             'config/autoload/{,*.}{global,local}.php',
         ),
-		'lazy_loading' => array(
-            'Test' => array(
-                'url' => array('regex' => '/test/.*' ),
-            ),
+        'lazy_loading' => array(
+            // define here your rules
         ),
     ),
-	'service_manager' => array(
+    'service_manager' => array(
         'factories'    => array(
             'ModuleManager' => 'ZFMLL\Mvc\Service\ModuleManagerFactory',
         ),
@@ -134,12 +117,8 @@ return array(
         ),
     ),
     'service_manager' => array(
-        'use_defaults' => true,
         'factories'    => array(
             'ModuleManager' => 'ZFMLL\Mvc\Service\ModuleManagerFactory',
-        ),
-        'services' => array(
-            'RouteListener' => 'ZFMLL\Mvc\RouteListener',
         ),
     ),
 );
@@ -177,12 +156,8 @@ return array(
         ),
     ),
     'service_manager' => array(
-        'use_defaults' => true,
         'factories'    => array(
             'ModuleManager' => 'ZFMLL\Mvc\Service\ModuleManagerFactory',
-        ),
-        'services' => array(
-            'RouteListener' => 'ZFMLL\Mvc\RouteListener',
         ),
     ),
 );
@@ -232,7 +207,7 @@ class Module implements AutoloaderProvider
 }
 ```
 
-=> ZFMLL performance increases **up to 5%**.
+=> ZFMLL performance increases **up to 5%** on the module loading.
 
 In the seconde case :
 
@@ -248,7 +223,7 @@ $events->attach('application', MvcEvent::EVENT_BOOTSTRAP, array($this, 'secondLi
 $events->attach('Zend\ModuleManager\ModuleManager', 'loadModules.post', array($this, 'thirdListener'), -100);
 ```
 
-=> ZFMLL performance increases **up to 55%**.
+=> ZFMLL performance increases **up to 55%**on the module loading.
 
 In the third case :
 
@@ -263,6 +238,6 @@ $events->attach('application', MvcEvent::EVENT_BOOTSTRAP, array($this, 'firstLis
 $events->attach('application', MvcEvent::EVENT_BOOTSTRAP, array($this, 'secondListener'), 100);
 ```
 
-=> ZFMLL performance increases **up to 60%**.
+=> ZFMLL performance increases **up to 60%** on the module loading.
 
-With a real code in the several listeners, ZFMLL can increase more of 75% performance !
+With a real code in the several listeners, ZFMLL can increase more of 75% performance on the module loading !
