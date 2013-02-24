@@ -24,7 +24,7 @@ Add the dependency in composer.json :
 }
 ```
 
-```php
+```bash
 php composer.phar update
 ```
 
@@ -47,7 +47,6 @@ Zend\Loader\AutoloaderFactory::factory(array(
         ),
     ),
 ));
-```
 ```
 
 3) Modify your ./config/application.config.php :
