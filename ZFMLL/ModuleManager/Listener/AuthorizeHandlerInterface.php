@@ -10,8 +10,8 @@ namespace ZFMLL\ModuleManager\Listener;
 interface AuthorizeHandlerInterface
 {
     /**
-     * @param string $module
+     * Authorize a module loading
      * @return boolean 
      */
-    public function authorizeModule($module);
+    public function authorizeModule();
 }

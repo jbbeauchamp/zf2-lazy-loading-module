@@ -24,11 +24,10 @@ class DomainListener extends AbstractListener
     }
     
     /**
-     * 
-     * @param string $moduleName
+     * Authorize a module loading
      * @return boolean 
      */
-    public function authorizeModule($moduleName)
+    public function authorizeModule()
     {
     	$hostname = isset($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : @$_SERVER['HTTP_HOST'];
         return in_array($hostname, $this->config);

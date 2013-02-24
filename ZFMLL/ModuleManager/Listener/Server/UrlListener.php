@@ -12,11 +12,10 @@ use ZFMLL\ModuleManager\Listener\AbstractListener;
 class UrlListener extends AbstractListener
 {
     /**
-     * 
-     * @param string $moduleName
+     * Authorize a module loading
      * @return boolean 
      */
-    public function authorizeModule($moduleName)
+    public function authorizeModule()
     {
     	if(isset($this->config['static'])) {
             return @$_SERVER['REQUEST_URI'] == $this->config['static'];

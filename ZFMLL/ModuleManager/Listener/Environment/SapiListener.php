@@ -8,16 +8,14 @@
 namespace ZFMLL\ModuleManager\Listener\Environment;
 
 use ZFMLL\ModuleManager\Listener\AbstractListener;
-use ZFMLL\ModuleManager\Listener\EnvironmentHandler;
 
 class SapiListener extends AbstractListener
 {
     /**
-     * 
-     * @param string $module
+     * Authorize a module loading
      * @return boolean 
      */
-    public function authorizeModule($moduleName)
+    public function authorizeModule()
     {
         return php_sapi_name() === $this->config;
     }

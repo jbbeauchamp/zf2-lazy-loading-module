@@ -12,11 +12,10 @@ use ZFMLL\ModuleManager\Listener\AbstractListener;
 class DateTime extends AbstractListener
 {
     /**
-     * 
-     * @param string $moduleName
+     * Authorize a module loading
      * @return boolean 
      */
-    public function authorizeModule($moduleName)
+    public function authorizeModule()
     {
         $date = date('Y-m-d H:i:s');
         if($date >= $this->config['start'] && $date <= $this->config['stop']) {

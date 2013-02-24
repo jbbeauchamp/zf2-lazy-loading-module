@@ -7,9 +7,6 @@
 
 namespace ZFMLL\ModuleManager\Listener;
 
-use ZFMLL\ModuleManager\ModuleEvent;
-use Zend\ModuleManager\ModuleEvent as BaseModuleEvent;
-
 abstract class AbstractListener implements AuthorizeHandlerInterface
 {
     /**
@@ -36,11 +33,10 @@ abstract class AbstractListener implements AuthorizeHandlerInterface
     }
     
     /**
-     * Authorize loading module
-     * @param type $module
-     * @return type 
+     * Authorize a module loading
+     * @return boolean 
      */
-    public function authorizeModule($module)
+    public function authorizeModule()
     {
         return true;
     }

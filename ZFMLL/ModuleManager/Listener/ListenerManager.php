@@ -13,32 +13,26 @@ use ZFMLL\ModuleManager\Listener\Exception\InvalidListenerException;
 class ListenerManager extends AbstractPluginManager
 {
     protected $invokableClasses = array(
-        'datetime'  => 'ZFMLL\ModuleManager\Listener\Server\DateTime',
-        'hostname'  => 'ZFMLL\ModuleManager\Listener\Server\DomainListener',
-       	'getopt' => 'ZFMLL\ModuleManager\Listener\Environment\GetoptListener',
-        'http_method' => 'ZFMLL\ModuleManager\Listener\Server\HttpMethod',
-    	'https' => 'ZFMLL\ModuleManager\Listener\Server\HttpsListener',
-        'port' => 'ZFMLL\ModuleManager\Listener\Server\PortListener',
-    	'remoteaddr' => 'ZFMLL\ModuleManager\Listener\Server\RemoteAddrListener',
-        'sapi' => 'ZFMLL\ModuleManager\Listener\Environment\SapiListener',
-        'url' => 'ZFMLL\ModuleManager\Listener\Server\UrlListener',
-        'user_agent' => 'ZFMLL\ModuleManager\Listener\Server\UserAgent',
+        'datetime'          => 'ZFMLL\ModuleManager\Listener\Server\DateTime',
+        'hostname'          => 'ZFMLL\ModuleManager\Listener\Server\DomainListener',
+       	'getopt'            => 'ZFMLL\ModuleManager\Listener\Environment\GetoptListener',
+        'http_method'       => 'ZFMLL\ModuleManager\Listener\Server\HttpMethod',
+    	'https'             => 'ZFMLL\ModuleManager\Listener\Server\HttpsListener',
+        'port'              => 'ZFMLL\ModuleManager\Listener\Server\PortListener',
+    	'remoteaddr'        => 'ZFMLL\ModuleManager\Listener\Server\RemoteAddrListener',
+        'sapi'              => 'ZFMLL\ModuleManager\Listener\Environment\SapiListener',
+        'url'               => 'ZFMLL\ModuleManager\Listener\Server\UrlListener',
+        'user_agent'        => 'ZFMLL\ModuleManager\Listener\Server\UserAgent',
     );
 
     protected $aliases = array(
-        'php_sapi' => 'sapi',
-        'domain' => 'hostname',
-        'uri' => 'url',
-        'remote_addr' => 'remoteaddr',
-        'ip' => 'remoteaddr',
-        'http_user_agent' => 'user_agent',
+        'php_sapi'          => 'sapi',
+        'domain'            => 'hostname',
+        'uri'               => 'url',
+        'remote_addr'       => 'remoteaddr',
+        'ip'                => 'remoteaddr',
+        'http_user_agent'   => 'user_agent',
     );
-
-    public function get($name, $usePeeringServiceManagers = true)
-    {
-        $plugin = parent::get($name, $usePeeringServiceManagers);
-        return $plugin;
-    }
     
     /**
      * Determine if we have a valid helper

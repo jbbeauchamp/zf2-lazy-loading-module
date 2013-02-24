@@ -12,11 +12,10 @@ use ZFMLL\ModuleManager\Listener\AbstractListener;
 class UserAgent extends AbstractListener
 {
     /**
-     * 
-     * @param string $moduleName
+     * Authorize a module loading
      * @return boolean 
      */
-    public function authorizeModule($moduleName)
+    public function authorizeModule()
     {
     	if(isset($this->config['static'])) {
             return @$_SERVER['HTTP_USER_AGENT'] == $this->config['static'];

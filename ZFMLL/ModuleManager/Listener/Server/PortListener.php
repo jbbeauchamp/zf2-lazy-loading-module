@@ -24,11 +24,10 @@ class PortListener extends AbstractListener
     }
     
     /**
-     * 
-     * @param string $moduleName
+     * Authorize a module loading
      * @return boolean 
      */
-    public function authorizeModule($moduleName)
+    public function authorizeModule()
     {
         return in_array(@$_SERVER['SERVER_PORT'], $this->config);
     }

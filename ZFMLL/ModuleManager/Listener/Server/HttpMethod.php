@@ -12,11 +12,10 @@ use ZFMLL\ModuleManager\Listener\AbstractListener;
 class HttpMethod extends AbstractListener
 {
     /**
-     * 
-     * @param string $moduleName
+     * Authorize a module loading
      * @return boolean 
      */
-    public function authorizeModule($moduleName)
+    public function authorizeModule()
     {
     	return strtolower($_SERVER['REQUEST_METHOD']) == strtolower($this->config);
     }

@@ -8,7 +8,6 @@
 namespace ZFMLL\ModuleManager\Listener\Environment;
 
 use ZFMLL\ModuleManager\Listener\AbstractListener;
-use ZFMLL\ModuleManager\Listener\EnvironmentHandler;
 use Zend\Console\Getopt;
 
 class GetoptListener extends AbstractListener
@@ -25,11 +24,10 @@ class GetoptListener extends AbstractListener
     protected $isBad = false;
 
     /**
-     *
-     * @param string $module
+     * Authorize a module loading
      * @return boolean 
      */
-    public function authorizeModule($moduleName)
+    public function authorizeModule()
     {
     	if(strtolower(ini_get('register_argc_argv'))!='on' && ini_get('register_argc_argv')!='1') {
             return false;
